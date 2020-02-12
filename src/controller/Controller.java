@@ -2,6 +2,9 @@ package controller;
 
 import java.util.Scanner;
 
+import model.data_structures.Comparendo;
+import model.data_structures.Queue;
+import model.data_structures.Stack;
 import model.logic.Modelo;
 import view.View;
 
@@ -63,7 +66,14 @@ public class Controller
 				}
 				else 
 				{
-					
+					view.printMessage("La informacion de la cola de comparendos consecutivos, mas larga, con el mismo codigo de infraccion es:");
+					view.printMessage("");
+					Queue<Comparendo> elemto = modelo.opcion2();
+			
+					while(elemto.getSize()>0)
+					{
+						view.printMessage(elemto.dequeue().darInformacion());
+					}
 				}
 				view.printMessage("");
 				view.printMessage("");
@@ -75,8 +85,22 @@ public class Controller
 					view.printMessage("--------- \n Debe leer los datos antes. !! \n---------");
 				}
 				else 
-				{
-					
+				{ 
+					view.printMessage("Por favor dijite el numero de comparendos que quiere:");
+					int numComparendo = lector.nextInt();				
+					view.printMessage("Porfavor dijite el codigo de infreccion que quiere consultar:");
+					String codComparendo = lector.next();
+					Stack<Comparendo> elm = modelo.opcion3(numComparendo, codComparendo);
+					view.printMessage("");
+					view.printMessage("El numero de comparendos encontrados fue: "+ elm.getSize());
+					view.printMessage("");
+					view.printMessage("La informacion de cada uno de los comparendos es la siguiente ");
+					view.printMessage("");
+
+					while(elm.getSize()>0)
+					{
+						view.printMessage(elm.pop().darInformacion());
+					}
 				}
 				view.printMessage("");
 				view.printMessage("");

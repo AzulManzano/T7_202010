@@ -109,10 +109,8 @@ public class Stack<T> implements IStack<T>
 		return null;
 	}
 
-
 	public Iterator<T> iterator() 
 	{
 		return new Iterador<T>(primero);
 	}
-
 }

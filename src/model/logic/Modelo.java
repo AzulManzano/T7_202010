@@ -37,6 +37,11 @@ public class Modelo
 		iniciado = 0;
 	}
 	
+	public Queue<Comparendo> darCola()
+	{
+		return cola;
+	}
+	
 	public int darIniciacion()
 	{
 		return iniciado;
@@ -65,19 +70,70 @@ public class Modelo
 	public Queue<Comparendo> opcion2()
 	{
 		Queue<Comparendo> nuevo = new Queue<Comparendo>();
+		Queue<Comparendo> mayor = new Queue<Comparendo>();
+		Comparendo actual = null;
+		
+		while (cola.isEmpty() == false)
+		{
+			actual = cola.dequeue();
+			
+			if(nuevo.getElement() == null)
+			{
+				nuevo.enqueue(actual);
+			}
+			else if(nuevo.getElement().darCodInfeaccion().equals(actual.darCodInfeaccion()))
+			{
+				nuevo.enqueue(actual);
+			}
+			else
+			{
+				if(nuevo.getSize()>mayor.getSize())
+				{
+					mayor = nuevo;
+				}
+				nuevo = new Queue<Comparendo>();
+				nuevo.enqueue(actual);
+			}
+		}
+		
+		return mayor;
+	}
+	
+	public Stack<Comparendo> opcion3(int PnumeroComparendos, String pcodigo )
+	{
+		Stack<Comparendo> nuevo = new Stack<Comparendo>();
+		boolean termine = false;
+		Comparendo actual = null;
+		int tamano = pila.getSize();
+		
+		for(int i = 0; i < tamano && termine == false; i ++)
+		{
+			actual = pila.pop();
+			
+			if(actual.darCodInfeaccion().equals(pcodigo))
+			{
+				nuevo.push(actual);
+			}
+			
+			if(nuevo.getSize() == PnumeroComparendos)
+			{
+				termine = true;
+			}
+		}
+		
 		
 		return nuevo;
 	}
 	
+	
+//	465191
 	public void cargarDatos() 
 	{
-
-
 
 		JsonReader reader;
 		try {
 			reader = new JsonReader(new FileReader(PATH));
-			JsonElement elem = JsonParser.parseReader(reader);
+			JsonElement elem = JsonParser.parseReader(reader); 
 			JsonArray e2 = elem.getAsJsonObject().get("features").getAsJsonArray();
 
 
