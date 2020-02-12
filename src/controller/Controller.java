@@ -66,9 +66,12 @@ public class Controller
 				}
 				else 
 				{
-					view.printMessage("La informacion de la cola de comparendos consecutivos, mas larga, con el mismo codigo de infraccion es:");
-					view.printMessage("");
 					Queue<Comparendo> elemto = modelo.opcion2();
+					view.printMessage("el tamaño de la cola de comparendos consecutivos mas larga, con el mismo codigo de infraccion es: "+elemto.getSize() );
+					view.printMessage("");
+					view.printMessage("La informacion de los comparendos es:");
+					view.printMessage("");
+					
 			
 					while(elemto.getSize()>0)
 					{
@@ -88,7 +91,7 @@ public class Controller
 				{ 
 					view.printMessage("Por favor dijite el numero de comparendos que quiere:");
 					int numComparendo = lector.nextInt();				
-					view.printMessage("Porfavor dijite el codigo de infreccion que quiere consultar:");
+					view.printMessage("Porfavor dijite el codigo de infreccion que quiere consultar:(En mayuscula)");
 					String codComparendo = lector.next();
 					Stack<Comparendo> elm = modelo.opcion3(numComparendo, codComparendo);
 					view.printMessage("");
