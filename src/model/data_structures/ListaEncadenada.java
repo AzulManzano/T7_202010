@@ -158,7 +158,8 @@ public class ListaEncadenada<T> implements IListaEncadenada<T>
 					n.asignarSiguiente(n.darSiguiente().darSiguiente());
 					rta = true;
 					tamano --;
-				}
+				}				
+				n = n.darSiguiente();
 			}
 		}
 		return rta;

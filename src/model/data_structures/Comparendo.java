@@ -53,7 +53,7 @@ public class Comparendo {
 	//	OBJECTID, FECHA_HORA, INFRACCION, CLASE_VEHI, TIPO_SERVI, LOCALIDAD
 	public String darInformacion()
 	{
-		return "[OBJECTID: " + objectId + ", FECHA_HORA: " + fecha_hora + "INFRACCION: " + infraccion 
+		return "[OBJECTID: " + objectId + ", FECHA_HORA: " + fecha_hora + ", INFRACCION: " + infraccion 
 				+ ", CLASE_VEHI: " + clase_vehi + ", TIPO_SERVI: " + tipo_servi + ", LOCALIDAD: " + localidad +"]";
 	}
 

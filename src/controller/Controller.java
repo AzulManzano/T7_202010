@@ -49,40 +49,18 @@ public class Controller
 			{
 			case 1:
 				view.printMessage("Los datos fueron leidos satisfactoriamente");
-				view.printMessage("  La cantidad de comparendos que fueron leidos es: " + modelo.darTamCola() + " / " +modelo.darTamLista());
-				view.printMessage("");		
+				view.printMessage("  La cantidad de comparendos que fueron leidos es: " + modelo.darTamLista());
+				view.printMessage("");
+				view.printMessage("El comparendo con mayor OBJECTID encontrado es:");
 				view.printMessage(modelo.darMayorObjectId().darInformacion());
 				view.printMessage("");
-				view.printMessage("MinLongitud: "+ modelo.darMinLongitud() + " MinLatirud: " +modelo.darMinLatitud()+ "\nMayLongitud: "+ modelo.darMayLongitud() + " MayorLatitud: "+ modelo.darMayLatitud());
+				view.printMessage("La zona Minimax es:");
+				view.printMessage("La mayor longitud: "+ modelo.darMayLongitud() + " La mayor latitud: "+ modelo.darMayLatitud()+"\nLa menor longitud: "+ modelo.darMinLongitud() + "  La menor latitud: " +modelo.darMinLatitud());
+				view.printMessage("");
+				view.printMessage("");
 				break;
 
 			case 2:			
-				if(modelo.darIniciacion() == 0)
-				{
-					view.printMessage("--------- \n Debe leer los datos antes. !! \n---------");
-				}
-				else 
-				{
-					
-				}
-				view.printMessage("");
-				view.printMessage("");
-				break;
-
-			case 3:
-				if(modelo.darIniciacion() == 0)
-				{
-					view.printMessage("--------- \n Debe leer los datos antes. !! \n---------");
-				}
-				else 
-				{ 
-					
-				}
-				view.printMessage("");
-				view.printMessage("");
-				break;
-
-			case 4:
 				view.printMessage("--------- \n Hasta pronto !! \n---------"); 
 				lector.close();
 				fin = true;

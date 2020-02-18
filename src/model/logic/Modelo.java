@@ -131,66 +131,6 @@ public class Modelo
 		return cola.getElement();
 	}
 
-	public Queue<Comparendo> opcion2()
-	{
-		Queue<Comparendo> nuevo = new Queue<Comparendo>();
-		Queue<Comparendo> mayor = new Queue<Comparendo>();
-		Comparendo actual = null;
-
-		while (cola.isEmpty() == false)
-		{
-			actual = cola.dequeue();
-
-			if(nuevo.getElement() == null)
-			{
-				nuevo.enqueue(actual);
-			}
-			else if(nuevo.getElement().darCodInfeaccion().equals(actual.darCodInfeaccion()))
-			{
-				nuevo.enqueue(actual);
-			}
-			else
-			{
-				if(nuevo.getSize()>mayor.getSize())
-				{
-					mayor = nuevo;
-				}
-				nuevo = new Queue<Comparendo>();
-				nuevo.enqueue(actual);
-			}
-		}
-
-		return mayor;
-	}
-
-	public Stack<Comparendo> opcion3(int PnumeroComparendos, String pcodigo )
-	{
-		Stack<Comparendo> nuevo = new Stack<Comparendo>();
-		boolean termine = false;
-		Comparendo actual = null;
-		int tamano = pila.getSize();
-
-		for(int i = 0; i < tamano && termine == false; i ++)
-		{
-			actual = pila.pop();
-
-			if(actual.darCodInfeaccion().equals(pcodigo))
-			{
-				nuevo.push(actual);
-			}
-
-			if(nuevo.getSize() == PnumeroComparendos)
-			{
-				termine = true;
-			}
-		}
-
-
-		return nuevo;
-	}
-
-
-	//	465191
 	public void cargarDatos() 
 	{
 		JsonReader reader;
@@ -265,5 +205,64 @@ public class Modelo
 		}
 
 	}
+	
+	//Taller 
+	public Comparendo unoParteA(String pLocalidad)
+	{
+		return null;
+	}
+	
+	public Stack<Comparendo> dosParteA(Date pFecha)
+	{
+		return null;
+	}
+	
+	public Stack<Comparendo> tresParteAFecha1(Date pfecha1)
+	{
+		return null;
+	}
+	
+	public Stack<Comparendo> tresParteAFecha2(Date pFecha2)
+	{
+		return null;
+	}
+	
+	public Comparendo unoParteB(String pInfraccion)
+	{
+		return null;
+	}
+	
+	public Stack<Comparendo> dosParteB(String pInfraccion)
+	{
+		return null;
+	}
+	
+	public Stack<Comparendo> tresParteBParticular()
+	{
+		return null;
+	}
+	public Stack<Comparendo> tresParteBPublico()
+	{
+		return null;
+	}
+	
+	public Queue<Comparendo> unoParteC(String pLocalidad, Date pFecha1, Date pFecha2)
+	{
+		return null;
+	}
+	
+	public Queue<Comparendo> dosParteC(int pNumero, Date pFecha1, Date pFecha2)
+	{
+		return null;
+	}
+	
+	public Queue<Comparendo> tresParteC()
+	{
+		return null;
+	}
+	
+	
+	
+	
 
 }

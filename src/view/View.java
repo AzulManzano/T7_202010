@@ -26,9 +26,7 @@ public class View
 	{
 		System.out.println("MENU DEL USUARIO");
 		System.out.println("1. Leer los datos");
-		System.out.println("2. Procesar la cola");
-		System.out.println("3. Procesar la pila");
-		System.out.println("4. Exit");
+		System.out.println("2. Exit");
 		System.out.println("Dar el numero de opcion a resolver, luego oprimir tecla Return: (e.g., 1):");
 	}
 
