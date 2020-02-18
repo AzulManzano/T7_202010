@@ -13,6 +13,8 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
 import model.data_structures.Comparendo;
+import model.data_structures.ListaEncadenada;
+import model.data_structures.Nodo;
 import model.data_structures.Queue;
 import model.data_structures.Stack;
 
@@ -25,58 +27,120 @@ public class Modelo
 	// Solucion de carga de datos publicada al curso Estructuras de Datos 2020-10
 	private Stack<Comparendo> pila;
 	private Queue<Comparendo> cola;
+	private ListaEncadenada<Comparendo> lista;
 	private int iniciado;
-	
 
-	public static String PATH = "./data/comparendos_dei_2018.geojson";
+	private Comparendo mayorObjectId;
+	private double mayLatitud;
+	private double mayLongitud;
+	private double minLatitud;
+	private double minLongitud;
+
+
+	public static String PATH = "./data/comparendos_dei_2018_small.geojson";
 
 	public Modelo()
 	{
 		pila = new Stack<Comparendo>();
 		cola = new Queue<Comparendo>();
+		lista = new ListaEncadenada<Comparendo>();
 		iniciado = 0;
+
+		mayorObjectId = null;
+		mayLatitud = -90;
+		mayLongitud = -90;
+		minLatitud = 90;
+		minLongitud = 90;
+
 	}
-	
+
+
+	// Retorno de estructuras -----------------------
 	public Queue<Comparendo> darCola()
 	{
 		return cola;
 	}
-	
+
+	public Stack<Comparendo> darPila()
+	{
+		return pila;
+	}
+
+	public ListaEncadenada<Comparendo> darLista()
+	{
+		return lista;
+	}
+	//---------------------------------------------
+
 	public int darIniciacion()
 	{
 		return iniciado;
 	}
+	
+	public Comparendo darMayorObjectId()
+	{
+		return mayorObjectId;
+	}
+	
+	public double darMayLatitud()
+	{
+		return mayLatitud;
+	}
+	
+	public double darMayLongitud()
+	{
+		return mayLongitud;
+	}
+	
+	public double darMinLatitud()
+	{
+		return minLatitud;
+	}
+	
+	public double darMinLongitud()
+	{
+		return minLongitud;
+	}
 
+
+	//Tamaño ----------------------------------------------
 	public int darTamPila()
 	{
 		return pila.getSize();
 	}
-	
+
 	public int darTamCola()
 	{
 		return cola.getSize();
 	}
-	
+
+	public int darTamLista()
+	{
+		return lista.getSize();
+	}
+
+	//---------------------------------------------------
+
 	public Comparendo darComparendoStack()
 	{
 		return pila.getElement();
 	}
-	
+
 	public Comparendo darComparendoQueue()
 	{
 		return cola.getElement();
 	}
-	
+
 	public Queue<Comparendo> opcion2()
 	{
 		Queue<Comparendo> nuevo = new Queue<Comparendo>();
 		Queue<Comparendo> mayor = new Queue<Comparendo>();
 		Comparendo actual = null;
-		
+
 		while (cola.isEmpty() == false)
 		{
 			actual = cola.dequeue();
-			
+
 			if(nuevo.getElement() == null)
 			{
 				nuevo.enqueue(actual);
@@ -95,41 +159,40 @@ public class Modelo
 				nuevo.enqueue(actual);
 			}
 		}
-		
+
 		return mayor;
 	}
-	
+
 	public Stack<Comparendo> opcion3(int PnumeroComparendos, String pcodigo )
 	{
 		Stack<Comparendo> nuevo = new Stack<Comparendo>();
 		boolean termine = false;
 		Comparendo actual = null;
 		int tamano = pila.getSize();
-		
+
 		for(int i = 0; i < tamano && termine == false; i ++)
 		{
 			actual = pila.pop();
-			
+
 			if(actual.darCodInfeaccion().equals(pcodigo))
 			{
 				nuevo.push(actual);
 			}
-			
+
 			if(nuevo.getSize() == PnumeroComparendos)
 			{
 				termine = true;
 			}
 		}
-		
-		
+
+
 		return nuevo;
 	}
-	
-	
-//	465191
+
+
+	//	465191
 	public void cargarDatos() 
 	{
-
 		JsonReader reader;
 		try {
 			reader = new JsonReader(new FileReader(PATH));
@@ -158,9 +221,41 @@ public class Modelo
 				double latitud = e.getAsJsonObject().get("geometry").getAsJsonObject().get("coordinates").getAsJsonArray()
 						.get(1).getAsDouble();
 
+
 				Comparendo c = new Comparendo(OBJECTID, FECHA_HORA, DES_INFRAC, MEDIO_DETE, CLASE_VEHI, TIPO_SERVI, INFRACCION, LOCALIDAD, longitud, latitud);
+
+				if(pila.isEmpty() == true)
+				{
+					mayorObjectId = c;
+				}
+				else 
+				{
+					if(mayorObjectId.darObjectId() < c.darObjectId() )
+					{
+						mayorObjectId = c;
+					}
+					if(mayLatitud < c.darLatitud())
+					{
+						mayLatitud = c.darLatitud();
+					}
+					if(mayLongitud < c.darLongitud())
+					{
+						mayLongitud = c.darLongitud();
+					}
+					if(minLatitud > c.darLatitud())
+					{
+						minLatitud = c.darLatitud();
+					}
+					if(minLongitud > c.darLongitud())
+					{
+						minLongitud = c.darLongitud();
+					}
+				}
+
+
 				pila.push(c);
 				cola.enqueue(c);
+				lista.add(c);
 				iniciado = 1;
 			}
 
@@ -170,4 +265,5 @@ public class Modelo
 		}
 
 	}
+
 }

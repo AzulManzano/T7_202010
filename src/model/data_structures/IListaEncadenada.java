@@ -12,7 +12,11 @@ public interface IListaEncadenada<T> extends Iterable<T>
     
     public T getElement(int k) throws Exception;
     
+    public void inCero();
+    
     public T getCurrentElement();
+    
+    public void next();
     
     public boolean delete(T dato);
     

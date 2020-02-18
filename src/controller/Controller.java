@@ -3,6 +3,7 @@ package controller;
 import java.util.Scanner;
 
 import model.data_structures.Comparendo;
+import model.data_structures.Nodo;
 import model.data_structures.Queue;
 import model.data_structures.Stack;
 import model.logic.Modelo;
@@ -48,15 +49,11 @@ public class Controller
 			{
 			case 1:
 				view.printMessage("Los datos fueron leidos satisfactoriamente");
-				view.printMessage("  La cantidad de comparendos que fueron leidos es: " + modelo.darTamCola() + "." );
+				view.printMessage("  La cantidad de comparendos que fueron leidos es: " + modelo.darTamCola() + " / " +modelo.darTamLista());
+				view.printMessage("");		
+				view.printMessage(modelo.darMayorObjectId().darInformacion());
 				view.printMessage("");
-				view.printMessage("-La información del primer comparendo de la cola es:"); 
-				view.printMessage("  "+ modelo.darComparendoQueue());
-				view.printMessage("");
-				view.printMessage("-La información del primer comparendo de la pila es:");
-				view.printMessage("  " + modelo.darComparendoStack());
-				view.printMessage("");
-				view.printMessage("");
+				view.printMessage("MinLongitud: "+ modelo.darMinLongitud() + " MinLatirud: " +modelo.darMinLatitud()+ "\nMayLongitud: "+ modelo.darMayLongitud() + " MayorLatitud: "+ modelo.darMayLatitud());
 				break;
 
 			case 2:			
@@ -66,17 +63,7 @@ public class Controller
 				}
 				else 
 				{
-					Queue<Comparendo> elemto = modelo.opcion2();
-					view.printMessage("el tamaño de la cola de comparendos consecutivos mas larga, con el mismo codigo de infraccion es: "+elemto.getSize() );
-					view.printMessage("");
-					view.printMessage("La informacion de los comparendos es:");
-					view.printMessage("");
 					
-			
-					while(elemto.getSize()>0)
-					{
-						view.printMessage(elemto.dequeue().darInformacion());
-					}
 				}
 				view.printMessage("");
 				view.printMessage("");
@@ -89,21 +76,7 @@ public class Controller
 				}
 				else 
 				{ 
-					view.printMessage("Por favor dijite el numero de comparendos que quiere:");
-					int numComparendo = lector.nextInt();				
-					view.printMessage("Porfavor dijite el codigo de infreccion que quiere consultar:(En mayuscula)");
-					String codComparendo = lector.next();
-					Stack<Comparendo> elm = modelo.opcion3(numComparendo, codComparendo);
-					view.printMessage("");
-					view.printMessage("El numero de comparendos encontrados fue: "+ elm.getSize());
-					view.printMessage("");
-					view.printMessage("La informacion de cada uno de los comparendos es la siguiente ");
-					view.printMessage("");
-
-					while(elm.getSize()>0)
-					{
-						view.printMessage(elm.pop().darInformacion());
-					}
+					
 				}
 				view.printMessage("");
 				view.printMessage("");
