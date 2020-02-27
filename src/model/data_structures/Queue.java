@@ -2,7 +2,7 @@ package model.data_structures;
 
 import java.util.Iterator;
 
-public class Queue<T> implements IQueue<T> 
+public class Queue<T extends Comparable<T>> implements IQueue<T> 
 {
 	//----------------------------------------------------------------
 	//Atributos ------------------------------------------------------
@@ -116,6 +116,15 @@ public class Queue<T> implements IQueue<T>
 		if(primero != null)
 		{
 			return primero.darElemento();
+		}
+		return null;
+	}
+	
+	public T getFElement()
+	{
+		if(ultimo != null)
+		{
+			return ultimo.darElemento();
 		}
 		return null;
 	}

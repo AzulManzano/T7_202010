@@ -49,18 +49,34 @@ public class Controller
 			{
 			case 1:
 				view.printMessage("Los datos fueron leidos satisfactoriamente");
-				view.printMessage("  La cantidad de comparendos que fueron leidos es: " + modelo.darTamLista());
+				view.printMessage("  La cantidad de comparendos que fueron leidos es: " + modelo.darTamCola());
 				view.printMessage("");
-				view.printMessage("El comparendo con mayor OBJECTID encontrado es:");
-				view.printMessage(modelo.darMayorObjectId().darInformacion());
+				view.printMessage("La informacion del primer comparendo es:");
+				view.printMessage(modelo.darCola().getElement().darInformacion());
 				view.printMessage("");
-				view.printMessage("La zona Minimax es:");
-				view.printMessage("La mayor longitud: "+ modelo.darMayLongitud() + " La mayor latitud: "+ modelo.darMayLatitud()+"\nLa menor longitud: "+ modelo.darMinLongitud() + "  La menor latitud: " +modelo.darMinLatitud());
+				view.printMessage("La informacion del ultimo comparendo es:");
+				view.printMessage(modelo.darCola().getElement().darInformacion());
 				view.printMessage("");
 				view.printMessage("");
 				break;
 
-			case 2:			
+			case 2:
+				view.printMessage("Se ha hecho la copia");
+				view.printMessage("El numero de comparendos copiados es: "+ modelo.copiarComparendos().darTamano());
+			case 3:
+				view.printMessage("Se ha ordenado");
+				// Copiar los comparendos originales en un arreglo de objetos Comparables – Requerimiento 1
+				 Comparable copia_Comparendos [ ] = modelo.copiarComparendos();
+				 long startTime = System.currentTimeMillis(); // medición tiempo actual
+				 // solucion Requerimiento 2, 3 o 4
+				 modelo.xxxxxSort( copia_Comparendos );
+				 long endTime = System.currentTimeMillis(); // medición tiempo actual
+				 long duration = endTime - startTime; // duracion de ejecucion del algoritmo
+				 view.printMensage("Tiempo de ordenamiento: " + duration + " milisegundos");
+				 // mostrar los resultados del algoritmo xxxxxSort que quedaron en el arreglo
+				 // copia_Comparendos: los 10 primeros y los 10 últimos comparendos resultantes
+
+			case 4:			
 				view.printMessage("--------- \n Hasta pronto !! \n---------"); 
 				lector.close();
 				fin = true;

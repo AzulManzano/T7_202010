@@ -12,6 +12,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
+import model.data_structures.ArregloDinamico;
 import model.data_structures.Comparendo;
 import model.data_structures.ListaEncadenada;
 import model.data_structures.Nodo;
@@ -37,7 +38,7 @@ public class Modelo
 	private double minLongitud;
 
 
-	public static String PATH = "./data/comparendos_dei_2018_small.geojson";
+	public static String PATH = "./data/comparendos_dei_2018.geojson";
 
 	public Modelo()
 	{
@@ -76,27 +77,27 @@ public class Modelo
 	{
 		return iniciado;
 	}
-	
+
 	public Comparendo darMayorObjectId()
 	{
 		return mayorObjectId;
 	}
-	
+
 	public double darMayLatitud()
 	{
 		return mayLatitud;
 	}
-	
+
 	public double darMayLongitud()
 	{
 		return mayLongitud;
 	}
-	
+
 	public double darMinLatitud()
 	{
 		return minLatitud;
 	}
-	
+
 	public double darMinLongitud()
 	{
 		return minLongitud;
@@ -205,64 +206,16 @@ public class Modelo
 		}
 
 	}
-	
-	//Taller 
-	public Comparendo unoParteA(String pLocalidad)
-	{
-		return null;
+
+	public ArregloDinamico<Comparendo> copiarComparendos()
+	{int tam = darTamCola();
+		ArregloDinamico<Comparendo> copi = new ArregloDinamico(tam);
+		for(int i = 0; i<tam; i++)
+		{
+			copi.agregar(darCola().dequeue());
+		}
+		return copi;
 	}
-	
-	public Stack<Comparendo> dosParteA(Date pFecha)
-	{
-		return null;
-	}
-	
-	public Stack<Comparendo> tresParteAFecha1(Date pfecha1)
-	{
-		return null;
-	}
-	
-	public Stack<Comparendo> tresParteAFecha2(Date pFecha2)
-	{
-		return null;
-	}
-	
-	public Comparendo unoParteB(String pInfraccion)
-	{
-		return null;
-	}
-	
-	public Stack<Comparendo> dosParteB(String pInfraccion)
-	{
-		return null;
-	}
-	
-	public Stack<Comparendo> tresParteBParticular()
-	{
-		return null;
-	}
-	public Stack<Comparendo> tresParteBPublico()
-	{
-		return null;
-	}
-	
-	public Queue<Comparendo> unoParteC(String pLocalidad, Date pFecha1, Date pFecha2)
-	{
-		return null;
-	}
-	
-	public Queue<Comparendo> dosParteC(int pNumero, Date pFecha1, Date pFecha2)
-	{
-		return null;
-	}
-	
-	public Queue<Comparendo> tresParteC()
-	{
-		return null;
-	}
-	
-	
-	
 	
 
 }

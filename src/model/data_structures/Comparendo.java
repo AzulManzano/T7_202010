@@ -3,7 +3,8 @@ package model.data_structures;
 
 import java.util.Date;
 
-public class Comparendo {
+public class Comparendo implements Comparable<Comparendo>
+{
 	private int objectId;
 	private Date fecha_hora;
 	private String des_infrac;
@@ -40,6 +41,11 @@ public class Comparendo {
 		return objectId;
 	}
 	
+	public Date darFecha()
+	{
+		return fecha_hora;
+	}
+	
 	public double darLongitud()
 	{
 		return longitud;
@@ -65,4 +71,32 @@ public class Comparendo {
 				+ longitud + "]";
 	}
 
+	@Override
+	public int compareTo(Comparendo arg) 
+	{
+		int num = 0;
+		if(this.darFecha() == arg.darFecha())
+		{
+			if(this.darObjectId()>arg.darObjectId())
+			{
+				num = 1;
+			}
+			else if(this.darObjectId()<arg.darObjectId())
+			{
+				num = -1;
+			}
+		}
+		else
+		{
+			if(this.darFecha().compareTo(arg.darFecha()) > 0)
+			{
+				num = 1;
+			}
+			else if(this.darFecha().compareTo(arg.darFecha()) < 0)
+			{
+				num = -1;
+			}
+		}
+		return num;
+	}
 }
