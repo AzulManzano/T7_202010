@@ -25,9 +25,10 @@ public class View
 	public void printMenu()
 	{
 		System.out.println("MENU DEL USUARIO");
-		System.out.println("1. Leer los datos");
-		System.out.println("2. Copiar");
-		System.out.println("3. Ordenar ascendentemente");
+		System.out.println("1. Cargar datos");
+		System.out.println("2. Procesar la MaxColaCP");
+		System.out.println("3. Procesar la MaxHeapCP");
+		System.out.println("4. Salir");
 		System.out.println("Dar el numero de opcion a resolver, luego oprimir tecla Return: (e.g., 1):");
 	}
 
@@ -39,5 +40,19 @@ public class View
 	public void printModelo(Modelo modelo)
 	{
 		// TODO implementar
+	}
+	
+	public void printMenuLista()
+	{
+		System.out.println("INDIQUE QUE TIPO DE VEICULO QUIERE TENER EN CUENTA:");
+		System.out.println(" 1.Automovil");
+		System.out.println(" 2.Bicicleta");
+		System.out.println(" 3.Bus");
+		System.out.println(" 4.Buseta");
+		System.out.println(" 5.Camioneta");
+		System.out.println(" 6.Campero");
+		System.out.println(" 7.Motocicleta");
+		System.out.println("Ingrese el numero de los elemententos que quiere, separados por comas");
+		System.out.println("Ejemplo:1,3,4,6");
 	}
 }

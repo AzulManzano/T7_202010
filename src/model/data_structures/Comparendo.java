@@ -17,6 +17,11 @@ public class Comparendo implements Comparable<Comparendo>
 	private double latitud;
 	private double longitud;
 
+	public double darLatitud()
+	{
+		return latitud;
+	}
+
 	public Comparendo(int objeId, Date fecha, String descripcion, String detencion, String claseVeh, String tipoSer, String codInfraccion, String localidadP, double lonP, double latP)
 	{
 		objectId = objeId;
@@ -30,37 +35,16 @@ public class Comparendo implements Comparable<Comparendo>
 		longitud = lonP;
 		latitud = latP;
 	}
-
-	public String darCodInfeaccion()
-	{
-		return infraccion;
-	}
 	
-	public int darObjectId()
+	public String darCarro()
 	{
-		return objectId;
-	}
-	
-	public Date darFecha()
-	{
-		return fecha_hora;
-	}
-	
-	public double darLongitud()
-	{
-		return longitud;
-	}
-	
-	public double darLatitud()
-	{
-		return latitud;
+		return clase_vehi;
 	}
 
 	//	OBJECTID, FECHA_HORA, INFRACCION, CLASE_VEHI, TIPO_SERVI, LOCALIDAD
 	public String darInformacion()
 	{
-		return "[OBJECTID: " + objectId + ", FECHA_HORA: " + fecha_hora + ", INFRACCION: " + infraccion 
-				+ ", CLASE_VEHI: " + clase_vehi + ", TIPO_SERVI: " + tipo_servi + ", LOCALIDAD: " + localidad +"]";
+		return "[OBJECTID: " + objectId+ ", CLASE_VEHICULO,: " + clase_vehi + ", latitud=" + latitud + ", longitud="+ longitud + "]";
 	}
 
 	@Override
@@ -74,29 +58,21 @@ public class Comparendo implements Comparable<Comparendo>
 	@Override
 	public int compareTo(Comparendo arg) 
 	{
-		int num = 0;
-		if(this.darFecha() == arg.darFecha())
+		int valor = 101;
+
+		if(this.darLatitud()>arg.darLatitud())
 		{
-			if(this.darObjectId()>arg.darObjectId())
-			{
-				num = 1;
-			}
-			else if(this.darObjectId()<arg.darObjectId())
-			{
-				num = -1;
-			}
+			valor = 1;
 		}
-		else
+		else if(this.darLatitud()<arg.darLatitud())
 		{
-			if(this.darFecha().compareTo(arg.darFecha()) > 0)
-			{
-				num = 1;
-			}
-			else if(this.darFecha().compareTo(arg.darFecha()) < 0)
-			{
-				num = -1;
-			}
+			valor = -1;
 		}
-		return num;
+		else if(this.darLatitud()==arg.darLatitud())
+		{
+			valor = 0;
+		}
+
+		return valor;
 	}
 }

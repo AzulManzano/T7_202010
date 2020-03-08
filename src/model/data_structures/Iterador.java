@@ -12,7 +12,7 @@ public class Iterador<T>  implements Iterator<T>
 	//----------------------------------------------------------------
 	//Atributos ------------------------------------------------------
 	//----------------------------------------------------------------
-
+	
 	/**
 	 * Atributo que representa el siguiente. 
 	 */
@@ -54,8 +54,11 @@ public class Iterador<T>  implements Iterator<T>
 		{
 			throw new NoSuchElementException("No hay siguiente");
 		}
-		T objeto = siguiente.darElemento();
-		siguiente = siguiente.darSiguiente();
-		return objeto;
+		else
+		{
+			T objeto = siguiente.darElemento();
+			siguiente = siguiente.darSiguiente();
+			return objeto;
+		}
 	}
 }
