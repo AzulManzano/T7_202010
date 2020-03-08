@@ -1,5 +1,5 @@
-# T2_202010
-Azul Jacob Manzano Piñeros
+# T4_202010
+Azul Jacob Manzano PiÃ±eros
 201814117
 
 David Jurado
