@@ -39,9 +39,9 @@ public class MaxColaCP<T extends Comparable<T>> implements IMaxColaCP<T>
 	
 	public MaxColaCP(T[] lista)
 	{
-		tamano = lista.length;
+		tamano = 0;
 		ordenar(lista);
-		for(int i = 0; i<tamano;i++)
+		for(int i = 0; i<lista.length;i++)
 		{
 			agregar(lista[i]);
 		}
