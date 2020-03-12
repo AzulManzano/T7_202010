@@ -176,11 +176,7 @@ public class Modelo
 
 	public void cargarMaxColaCP()
 	{
-		maxCola = new MaxColaCP<Comparendo>();
-		for(int i =0; i<tamanoCorto; i++)
-		{
-			maxCola.agregar(listaCorta[i]);
-		}
+		maxCola = new MaxColaCP<Comparendo>(listaCorta);
 	}
 
 	public void cargarMaxHeapCP()

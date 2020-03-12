@@ -36,6 +36,16 @@ public class MaxColaCP<T extends Comparable<T>> implements IMaxColaCP<T>
 		primero = null;
 		ultimo = null;
 	}
+	
+	public MaxColaCP(T[] lista)
+	{
+		tamano = lista.length;
+		ordenar(lista);
+		for(int i = 0; i<tamano;i++)
+		{
+			agregar(lista[i]);
+		}
+	}
 
 	//----------------------------------------------------------------
 	//Metodos --------------------------------------------------------
@@ -131,9 +141,12 @@ public class MaxColaCP<T extends Comparable<T>> implements IMaxColaCP<T>
 	 */
 	public T darMax() 
 	{
-		return primero.darElemento();
+		if(esVacia() ==false)
+		{
+			return primero.darElemento();
+		}
+		return null;
 	}
-
 
 	/**
 	 *  Retorna si la cola está vacío o no.
@@ -141,6 +154,29 @@ public class MaxColaCP<T extends Comparable<T>> implements IMaxColaCP<T>
 	public boolean esVacia() 
 	{
 		return (tamano == 0);
+	}
+	
+	public void ordenar(T[] lista)
+	{
+		T mayor = null;
+		T tempora = null;
+		int indice = 0;
+		
+		for(int i = 0; i<lista.length;i++)
+		{
+			mayor = lista[i];
+			for(int j = i; j<lista.length; j++)
+			{
+				if(mayor.compareTo(lista[j])<0)
+				{
+					mayor = lista[j];
+					indice = j;
+				}
+			}
+			tempora = lista[i];
+			lista[i] = mayor;
+			lista[indice] = tempora;
+		}
 	}
 
 

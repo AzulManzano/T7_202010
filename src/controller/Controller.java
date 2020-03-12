@@ -64,7 +64,7 @@ public class Controller
 				long endTime1 = System.currentTimeMillis();
 				long duration1 = endTime1 - startTime1; 
 				
-				view.printMessage("El total de comparandos cargados es de "+modelo.darTamnoListaLarga()+" y el tamaño de la muestra con la que se va trabajar es de "+modelo.darTamanoMuestra()+" - "+ modelo.darTmanoMaxCola()+" - "+modelo.darTamanoMaxHeap());
+				view.printMessage("El total de comparandos cargados es de "+modelo.darTamnoListaLarga()+" y el tamaño de la muestra con la que se va trabajar es de "+modelo.darTamanoMuestra());
 
 				view.printMessage("  -El tiempo de agragr en la MaxColaCP es de: "+duration+" milisegundos.");
 				view.printMessage("  -El tiempo de agragr en la MaxHeapCP es de: "+duration1+" milisegundos.");

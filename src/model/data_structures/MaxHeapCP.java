@@ -44,6 +44,12 @@ public class MaxHeapCP<T extends Comparable<T>> implements IMaxHeapCP<T>
 			sink(k);
 		assert isMaxHeap();
 	}
+	
+	public MaxHeapCP()
+	{
+		tamano = 0;
+		elementos = (T[]) new Comparable[50];
+	}
 	//----------------------------------------------------------------
 	//Metodos --------------------------------------------------------
 	//----------------------------------------------------------------
