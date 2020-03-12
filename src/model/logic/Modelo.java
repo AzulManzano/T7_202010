@@ -28,7 +28,7 @@ public class Modelo
 	// Solucion de carga de datos publicada al curso Estructuras de Datos 2020-10
 
 
-	public static String PATH = "./data/Comparendos_DEI_2018_Bogotá_D.C_small.geojson";
+	public static String PATH = "./data/Comparendos_DEI_2018_Bogotá_D.C.geojson";
 
 	private Comparendo[] listaLarga;
 	private Comparendo[] listaCorta;
