@@ -17,10 +17,7 @@ public class Comparendo implements Comparable<Comparendo>
 	private double latitud;
 	private double longitud;
 
-	public double darLatitud()
-	{
-		return latitud;
-	}
+
 
 	public Comparendo(int objeId, Date fecha, String descripcion, String detencion, String claseVeh, String tipoSer, String codInfraccion, String localidadP, double lonP, double latP)
 	{
@@ -40,11 +37,26 @@ public class Comparendo implements Comparable<Comparendo>
 	{
 		return clase_vehi;
 	}
+	
+	public double darLatitud()
+	{
+		return latitud;
+	}
+	
+	public int darObjec()
+	{
+		return objectId;
+	}
 
 	//	OBJECTID, FECHA_HORA, INFRACCION, CLASE_VEHI, TIPO_SERVI, LOCALIDAD
 	public String darInformacion()
 	{
-		return "[OBJECTID: " + objectId+ ", CLASE_VEHICULO,: " + clase_vehi + ", latitud=" + latitud + ", longitud="+ longitud + "]";
+		return "[OBJECTID: " + objectId+ ", FECHA_HORA,: " + fecha_hora + ", LOCALIDAD: " + localidad + ", INFRACCION: "+ infraccion + "]";
+	}
+	
+	public String darDatos()
+	{
+		return "[OBJECTID: " + objectId+ ", FECHA_HORA,: " + fecha_hora + ", TIPO_SERVI: " + tipo_servi + ", CLASE_VEHI: "+ clase_vehi + ", INFRACCION: "+ infraccion + "]";
 	}
 
 	@Override
@@ -60,15 +72,15 @@ public class Comparendo implements Comparable<Comparendo>
 	{
 		int valor = 101;
 
-		if(this.darLatitud()>arg.darLatitud())
+		if(this.darObjec()>arg.darObjec())
 		{
 			valor = 1;
 		}
-		else if(this.darLatitud()<arg.darLatitud())
+		else if(this.darObjec()<arg.darObjec())
 		{
 			valor = -1;
 		}
-		else if(this.darLatitud()==arg.darLatitud())
+		else if(this.darObjec()==arg.darObjec())
 		{
 			valor = 0;
 		}

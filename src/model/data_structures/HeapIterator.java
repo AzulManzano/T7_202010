@@ -31,3 +31,4 @@ public class HeapIterator<T extends Comparable<T>> implements Iterator<T>
 		return copy.sacarMax();
 	}
 }
+

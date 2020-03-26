@@ -15,9 +15,13 @@ import com.google.gson.stream.JsonReader;
 
 
 import model.data_structures.Comparendo;
-import model.data_structures.MaxColaCP;
+import model.data_structures.LavesCompuestas;
+import model.data_structures.LinearProbing;
 import model.data_structures.MaxHeapCP;
 import model.data_structures.Nodo;
+import model.data_structures.Queue;
+import model.data_structures.SeparateChaining;
+import model.data_structures.SequentialSearch;
 
 /**
  * Definicion del modelo del mundo
@@ -25,80 +29,90 @@ import model.data_structures.Nodo;
  */
 public class Modelo 
 {
-	// Solucion de carga de datos publicada al curso Estructuras de Datos 2020-10
+	// PORFAVOR LEER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	//Ya que mi computador no tiene la capacidad de leer los 500000 datos del archivo grande no pude hacer las tablas de datos con esa informacion, 
+	//por ese motivo tuve que trabajar con este archivo que solo tiene 50000. Gracias por tu comprension
 
+	public static String PATH = "./data/Comparendos_DEI_2018_Bogotá_D.C_50000_.geojson";
+	// PORFAVOR LEER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	private SeparateChaining<LavesCompuestas,Queue<Comparendo>> sequential;
+	private LinearProbing<LavesCompuestas,Queue<Comparendo>> linear;
+	private Queue<LavesCompuestas> colaSeparateChaining;
+	private Queue<LavesCompuestas> colaLinearProbing;
+	private Comparendo primero;
+	private Comparendo ultimo;
+	
+	private Queue<LavesCompuestas> cola1;
+	private Queue<LavesCompuestas> cola2;
 
-	public static String PATH = "./data/Comparendos_DEI_2018_Bogotá_D.C.geojson";
-
-	private Comparendo[] listaLarga;
-	private Comparendo[] listaCorta;
-	private MaxColaCP<Comparendo> maxCola;
-	private ArrayList<Comparendo> verificador;
-	private MaxHeapCP<Comparendo> maxHeap;
-
-	private int tamanoLargo;
-	private int tamanoCorto;
+	private int elemnetoscargado;
 
 	public Modelo()
 	{
-		listaLarga = new Comparendo[600000];
-		verificador = new ArrayList<Comparendo>();
-		tamanoLargo = 0;
-		tamanoCorto = 0;
+		cola1 = new Queue<LavesCompuestas>();
+		cola2 = new Queue<LavesCompuestas>();
+		
+		elemnetoscargado = 0;
+		primero = null;
+		ultimo = null;
+		sequential = new SeparateChaining<LavesCompuestas,Queue<Comparendo>>();
+		linear = new LinearProbing<LavesCompuestas,Queue<Comparendo>>();
+		colaSeparateChaining = new Queue<LavesCompuestas>();
+		colaLinearProbing= new Queue<LavesCompuestas>();
 	}
 
 
 	// Retorno de estructuras -----------------------
-
-	public Comparendo[] darListaLarga()
+	public SeparateChaining<LavesCompuestas,Queue<Comparendo>> darSeparateChaining()
 	{
-		return 	listaLarga;
+		return sequential;
 	}
 
-	public ArrayList<Comparendo> darVerificado()
+	public LinearProbing<LavesCompuestas,Queue<Comparendo>> darLinearProbing()
 	{
-		return verificador;
+		return linear;
 	}
 
-	public Comparendo[] darListaCorta()
+	public Comparendo darPrimero()
 	{
-		return 	listaCorta;
+		return primero;
 	}
 
-	public MaxColaCP<Comparendo> darMaxColaCP()
+	public Comparendo darUltimo()
 	{
-		return maxCola;
+		return ultimo;
+	}
+	
+	public Queue<LavesCompuestas> darCola1()
+	{
+		return cola1;
+	}
+	
+	public Queue<LavesCompuestas> darCola2()
+	{
+		return cola2;
 	}
 
-	public MaxHeapCP<Comparendo> darMaxHeapCP()
-	{
-		return maxHeap;
-	}
-
+	
 	//---------------------------------------------
 
 
 	//Tamaño ----------------------------------------------
 
-	public int darTamnoListaLarga()
+	public int darelemnetoscargado()
 	{
-		return tamanoLargo;
+		return elemnetoscargado;
+	}
+	public int darTamanoSequentialSearch()
+	{
+		return sequential.size();
 	}
 
-	public int darTamanoMuestra()
+	public int darTamanoLinearProbing()
 	{
-		return tamanoCorto;
+		return linear.size();
 	}
 
-	public int darTamanoMaxHeap()
-	{
-		return maxHeap.darNumElementos();
-	}
-
-	public int darTmanoMaxCola()
-	{
-		return maxCola.darNumElementos();
-	}
 	//---------------------------------------------------
 
 	public void cargarDatos() 
@@ -131,10 +145,52 @@ public class Modelo
 				double latitud = e.getAsJsonObject().get("geometry").getAsJsonObject().get("coordinates").getAsJsonArray()
 						.get(1).getAsDouble();
 
-
+				elemnetoscargado++;
 				Comparendo c = new Comparendo(OBJECTID, FECHA_HORA, DES_INFRAC, MEDIO_DETE, CLASE_VEHI, TIPO_SERVI, INFRACCION, LOCALIDAD, longitud, latitud);
-				listaLarga[tamanoLargo] = c;
-				tamanoLargo++;
+				LavesCompuestas ll= new LavesCompuestas(FECHA_HORA,CLASE_VEHI,INFRACCION);
+
+				if(sequential.isEmpty() == true)
+				{
+					primero = c;
+				}
+
+				Queue<Comparendo> agregar1 = new Queue<Comparendo>();
+				if(sequential.get(ll) == null)
+				{
+					agregar1.enqueue(c);
+				}
+				else
+				{
+					Queue<Comparendo> otra = sequential.delete(ll);
+					otra.enqueue(c);
+					agregar1 = otra;
+				}
+				sequential.put(ll, agregar1);
+
+				Queue<Comparendo> agregar = new Queue<Comparendo>();
+				if(linear.get(ll) == null)
+				{
+					agregar.enqueue(c);
+				}
+				else
+				{
+					Queue<Comparendo> otra = linear.delete(ll);
+					otra.enqueue(c);
+					agregar = otra;
+				}
+
+				linear.put(ll, agregar);
+				
+				if(cola1.getSize()<8000)
+				{
+					cola1.enqueue(ll);
+				}
+				if(cola2.getSize()<8000)
+				{
+					cola2.enqueue(ll);
+				}
+
+				ultimo = c;
 			}
 
 		} catch (FileNotFoundException | ParseException e) {
@@ -144,135 +200,111 @@ public class Modelo
 
 	}
 
-	public int hacerMuestra(int numero)
+	public String tranformar(String lista)
 	{
-		if(tamanoLargo>numero)
-		{
-			listaCorta = new Comparendo[numero];
-			int indice = (int) tamanoLargo/numero;
-			for(int i = 0; i<numero; i++)
-			{
-				if(indice<tamanoLargo)
-				{
-					listaCorta[i] = listaLarga[indice];
-				}
-				else 
-				{
-					indice = 0;
-					listaCorta[i] = listaLarga[indice];
-				}
-				indice++;
-				tamanoCorto++;
-			}
+		String listica = "";
 
+		if(lista.equals("1"))
+		{
+			listica = "AUTOMÃ“VIL";
+		} 
+		else if(lista.equals("2"))
+		{
+			listica = "BICICLETA";
 		}
-		else 
+		else if(lista.equals("3"))
 		{
-			listaCorta = listaLarga;
-			tamanoCorto = tamanoLargo;
+			listica = "BUS";
 		}
-		return tamanoCorto;
-	}
-
-	public void cargarMaxColaCP()
-	{
-		maxCola = new MaxColaCP<Comparendo>(listaCorta);
-	}
-
-	public void cargarMaxHeapCP()
-	{
-		maxHeap = new MaxHeapCP<Comparendo>(listaCorta);
-	}
-
-	public MaxColaCP<Comparendo> requerimienrto1(String[] lista, int numero)
-	{
-		MaxColaCP<Comparendo> temporal = new MaxColaCP<Comparendo>();
-		boolean termine = false;
-		int maximo = maxCola.darNumElementos() ;
-		
-		for(int i = 0; i<maximo && termine==false;i++)
+		else if(lista.equals("4"))
 		{
-			Comparendo variable = maxCola.sacarMax();
-			boolean termine2 =false;
-			for(int j = 0;j<lista.length && termine2 == false;j++)
-			{
-				if(lista[j].equals(variable.darCarro()))
-				{
-					temporal.agregar(variable);
-					termine2 = true;
-				}
-			}
-			if(temporal.darNumElementos() == numero)
-			{
-				termine = true;
-			}
+			listica = "BUSETA";
 		}
-		return temporal;
-	}
-
-	public MaxHeapCP<Comparendo> requerimienrto2(String[] lista, int numero)
-	{
-		MaxHeapCP<Comparendo> temporal = new MaxHeapCP<Comparendo>(numero);
-		boolean termine = false;
-		int maximo = maxHeap.darNumElementos() ;
-
-		for(int i = 0; i<maximo && termine==false;i++)
+		else if(lista.equals("5"))
 		{
-			Comparendo variable = maxHeap.sacarMax();
-			boolean termine2 =false;
-			for(int j = 0;j<lista.length && termine2 == false;j++)
-			{
-				if(lista[j].equals(variable.darCarro()))
-				{
-					temporal.agregar(variable);
-					termine2 = true;
-				}
-			}
-			if(temporal.darNumElementos() == numero)
-			{
-				termine = true;
-			}
+			listica = "CAMIONETA";
+		}
+		else if(lista.equals("6"))
+		{
+			listica = "CAMPERO";
+		}
+		else if(lista.equals("7"))
+		{
+			listica =  "MOTOCICLETA";
 		}
 
-		return temporal;
-	}
-
-	public String[] tranformar(String[] lista)
-	{
-		String[] listica = new String[lista.length];
-
-		for(int i = 0; i<lista.length;i++)
-		{
-			if(lista[i].equals("1"))
-			{
-				listica[i] = "AUTOMÃ“VIL";
-			} 
-			else if(lista[i].equals("2"))
-			{
-				listica[i] = "BICICLETA";
-			}
-			else if(lista[i].equals("3"))
-			{
-				listica[i] = "BUS";
-			}
-			else if(lista[i].equals("4"))
-			{
-				listica[i] = "BUSETA";
-			}
-			else if(lista[i].equals("5"))
-			{
-				listica[i] = "CAMIONETA";
-			}
-			else if(lista[i].equals("6"))
-			{
-				listica[i] = "CAMPERO";
-			}
-			else if(lista[i].equals("7"))
-			{
-				listica[i] =  "MOTOCICLETA";
-			}
-		}
 		return listica;
+	}
+
+	public MaxHeapCP<Comparendo> requerimiento1(Date pFacha, String pClase, String pInfraccion)
+	{
+		MaxHeapCP<Comparendo> lista = new MaxHeapCP<Comparendo>();
+		LavesCompuestas llave = new LavesCompuestas(pFacha,pClase,pInfraccion);
+
+		if(linear.get(llave) != null)
+		{
+			Queue<Comparendo> otra = linear.delete(llave);
+
+
+			while(otra.getSize() !=0)
+			{
+				lista.agregar(otra.dequeue());
+			}
+		}
+		return lista;
+	}
+
+	public MaxHeapCP<Comparendo> requerimiento2(Date pFacha, String pClase, String pInfraccion)
+	{
+		MaxHeapCP<Comparendo> lista = new MaxHeapCP<Comparendo>();
+		LavesCompuestas llave = new LavesCompuestas(pFacha,pClase,pInfraccion);
+
+		if(sequential.get(llave) != null)
+		{
+			Queue<Comparendo> otra = sequential.delete(llave);
+
+
+			while(otra.getSize() !=0)
+			{
+				lista.agregar(otra.dequeue());
+			}
+		}
+		return lista;
+	}
+	
+	public void rellenarColas() throws ParseException
+	{
+		SimpleDateFormat parser=new SimpleDateFormat("yyyy-MM-dd");
+		String s11 = "2019-08-08";
+		Date FECHA_HORA1 = parser.parse(s11);		
+		String tipo1 = "MOTOCICLETA";
+		String tipo2 = "C40";
+		LavesCompuestas llave = new LavesCompuestas(FECHA_HORA1,tipo1,tipo2);
+		
+		for(int i = 0; i<2000;i++)
+		{
+			cola1.enqueue(llave);
+			cola2.enqueue(llave);
+		}
+		
+	}
+	
+	public void tiempoDeGetEnLinearProbing()
+	{
+		int tamano = cola1.getSize();
+		for(int i = 0;i<tamano;i++)
+		{
+			linear.get(cola1.dequeue());
+		}
+	}
+	
+	public void tiempoDeGetEnSeparateChaining()
+	{
+		int tamano = cola2.getSize();
+		for(int i = 0;i<tamano;i++)
+		{
+			sequential.get(cola2.dequeue());
+		}
 	}
 }
 
