@@ -13,7 +13,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
-import model.data_structures.ArbolRojoNegro;
+import model.data_structures.RedBlackBST;
 import model.data_structures.Comparendo;
 import model.data_structures.LLaves2A;
 import model.data_structures.LLaves2B;
@@ -241,16 +241,16 @@ public class Modelo
 		return estructura;
 	}
 	
-	public ArbolRojoNegro<Date,MaxHeapCP<Comparendo>> requerimiento2C()
+	public RedBlackBST<Date,MaxHeapCP<Comparendo>> requerimiento2C()
 	{
-		ArbolRojoNegro<Date,MaxHeapCP<Comparendo>> estructura = new ArbolRojoNegro<Date,MaxHeapCP<Comparendo>>();
+		RedBlackBST<Date,MaxHeapCP<Comparendo>> estructura = new RedBlackBST<Date,MaxHeapCP<Comparendo>>();
 		
 		return estructura;
 	}
 	
-	public ArbolRojoNegro<Date,MaxHeapCP<Comparendo>> requerimiento3C()
+	public RedBlackBST<Date,MaxHeapCP<Comparendo>> requerimiento3C()
 	{
-		ArbolRojoNegro<Date,MaxHeapCP<Comparendo>> estructura = new ArbolRojoNegro<Date,MaxHeapCP<Comparendo>>();
+		RedBlackBST<Date,MaxHeapCP<Comparendo>> estructura = new RedBlackBST<Date,MaxHeapCP<Comparendo>>();
 		
 		return estructura;
 	}
