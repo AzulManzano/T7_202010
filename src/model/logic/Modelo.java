@@ -13,9 +13,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
-
+import model.data_structures.ArbolRojoNegro;
 import model.data_structures.Comparendo;
-import model.data_structures.LavesCompuestas;
+import model.data_structures.LLaves2A;
+import model.data_structures.LLaves2B;
 import model.data_structures.LinearProbing;
 import model.data_structures.MaxHeapCP;
 import model.data_structures.Nodo;
@@ -35,82 +36,29 @@ public class Modelo
 
 	public static String PATH = "./data/Comparendos_DEI_2018_Bogotá_D.C_50000_.geojson";
 	// PORFAVOR LEER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	private SeparateChaining<LavesCompuestas,Queue<Comparendo>> sequential;
-	private LinearProbing<LavesCompuestas,Queue<Comparendo>> linear;
-	private Queue<LavesCompuestas> colaSeparateChaining;
-	private Queue<LavesCompuestas> colaLinearProbing;
-	private Comparendo primero;
-	private Comparendo ultimo;
-	
-	private Queue<LavesCompuestas> cola1;
-	private Queue<LavesCompuestas> cola2;
+	private MaxHeapCP<Comparendo> listaCarga;
 
-	private int elemnetoscargado;
 
 	public Modelo()
 	{
-		cola1 = new Queue<LavesCompuestas>();
-		cola2 = new Queue<LavesCompuestas>();
-		
-		elemnetoscargado = 0;
-		primero = null;
-		ultimo = null;
-		sequential = new SeparateChaining<LavesCompuestas,Queue<Comparendo>>();
-		linear = new LinearProbing<LavesCompuestas,Queue<Comparendo>>();
-		colaSeparateChaining = new Queue<LavesCompuestas>();
-		colaLinearProbing= new Queue<LavesCompuestas>();
+		listaCarga = new MaxHeapCP<Comparendo>();
 	}
 
 
 	// Retorno de estructuras -----------------------
-	public SeparateChaining<LavesCompuestas,Queue<Comparendo>> darSeparateChaining()
-	{
-		return sequential;
-	}
 
-	public LinearProbing<LavesCompuestas,Queue<Comparendo>> darLinearProbing()
+	public MaxHeapCP<Comparendo> darListaDeCarga()
 	{
-		return linear;
+		return listaCarga;
 	}
-
-	public Comparendo darPrimero()
-	{
-		return primero;
-	}
-
-	public Comparendo darUltimo()
-	{
-		return ultimo;
-	}
-	
-	public Queue<LavesCompuestas> darCola1()
-	{
-		return cola1;
-	}
-	
-	public Queue<LavesCompuestas> darCola2()
-	{
-		return cola2;
-	}
-
-	
 	//---------------------------------------------
 
 
 	//Tamaño ----------------------------------------------
 
-	public int darelemnetoscargado()
+	public int darTotalComparendos()
 	{
-		return elemnetoscargado;
-	}
-	public int darTamanoSequentialSearch()
-	{
-		return sequential.size();
-	}
-
-	public int darTamanoLinearProbing()
-	{
-		return linear.size();
+		return listaCarga.darNumElementos();
 	}
 
 	//---------------------------------------------------
@@ -124,7 +72,8 @@ public class Modelo
 			JsonArray e2 = elem.getAsJsonObject().get("features").getAsJsonArray();
 
 
-			SimpleDateFormat parser=new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat parser=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
 
 			for(JsonElement e: e2) {
 				int OBJECTID = e.getAsJsonObject().get("properties").getAsJsonObject().get("OBJECTID").getAsInt();
@@ -145,52 +94,10 @@ public class Modelo
 				double latitud = e.getAsJsonObject().get("geometry").getAsJsonObject().get("coordinates").getAsJsonArray()
 						.get(1).getAsDouble();
 
-				elemnetoscargado++;
+
 				Comparendo c = new Comparendo(OBJECTID, FECHA_HORA, DES_INFRAC, MEDIO_DETE, CLASE_VEHI, TIPO_SERVI, INFRACCION, LOCALIDAD, longitud, latitud);
-				LavesCompuestas ll= new LavesCompuestas(FECHA_HORA,CLASE_VEHI,INFRACCION);
 
-				if(sequential.isEmpty() == true)
-				{
-					primero = c;
-				}
-
-				Queue<Comparendo> agregar1 = new Queue<Comparendo>();
-				if(sequential.get(ll) == null)
-				{
-					agregar1.enqueue(c);
-				}
-				else
-				{
-					Queue<Comparendo> otra = sequential.delete(ll);
-					otra.enqueue(c);
-					agregar1 = otra;
-				}
-				sequential.put(ll, agregar1);
-
-				Queue<Comparendo> agregar = new Queue<Comparendo>();
-				if(linear.get(ll) == null)
-				{
-					agregar.enqueue(c);
-				}
-				else
-				{
-					Queue<Comparendo> otra = linear.delete(ll);
-					otra.enqueue(c);
-					agregar = otra;
-				}
-
-				linear.put(ll, agregar);
-				
-				if(cola1.getSize()<8000)
-				{
-					cola1.enqueue(ll);
-				}
-				if(cola2.getSize()<8000)
-				{
-					cola2.enqueue(ll);
-				}
-
-				ultimo = c;
+				listaCarga.agregar(c);
 			}
 
 		} catch (FileNotFoundException | ParseException e) {
@@ -200,7 +107,242 @@ public class Modelo
 
 	}
 
-	public String tranformar(String lista)
+	public MaxHeapCP<Comparendo> requerimiento1A()
+	{
+		MaxHeapCP<Comparendo> elementos = clonar();
+		int num = elementos.darNumElementos();
+		MaxHeapCP<Comparendo> elementosFinales = new MaxHeapCP<Comparendo>();
+
+		for(int i = 0; i<num;i++)
+		{
+			Comparendo este = elementos.sacarMax();
+			este.cambiarComparacion(1);
+
+
+			elementosFinales.agregar(este);
+		}
+		return elementosFinales;
+	}
+
+	public MaxHeapCP<Comparendo> requerimiento2A(Integer pMes, Integer pDia)
+	{
+		LLaves2A llave = new LLaves2A(pMes,pDia);
+		SeparateChaining<LLaves2A,MaxHeapCP<Comparendo>> estructura = new SeparateChaining<LLaves2A,MaxHeapCP<Comparendo>>();
+		MaxHeapCP<Comparendo> respuesta = new MaxHeapCP<Comparendo>();
+		MaxHeapCP<Comparendo> trabajable = clonar();
+
+		int corredor = trabajable.darNumElementos();
+
+		for(int i = 0; i <corredor;i++)
+		{
+			Comparendo actual = trabajable.sacarMax();
+			actual.cambiarComparacion(0);
+
+			Integer diaIndicado = actual.darFecha().getDay();
+			Integer mesIndicado = actual.darFecha().getMonth();
+			LLaves2A llaveq = new LLaves2A(mesIndicado,diaIndicado);
+
+
+			MaxHeapCP<Comparendo> agregada = new MaxHeapCP<Comparendo>();
+			if(estructura.get(llaveq) == null)
+			{
+				agregada.agregar(actual);
+			}
+			else
+			{
+				MaxHeapCP<Comparendo> estano = estructura.delete(llaveq);
+				estano.agregar(actual);
+				agregada = estano;
+			}
+
+
+			estructura.put(llaveq, agregada);
+		}
+
+		respuesta = estructura.get(llave);
+
+		return respuesta;
+	}
+	
+	public MaxHeapCP<Comparendo> requerimiento3A(String pFechaInicio,String pFechaFinal, String pLocalidad)
+	{
+		MaxHeapCP<Comparendo> respuesta = new MaxHeapCP<Comparendo>();
+		
+		return respuesta;
+	}
+
+	public MaxHeapCP<Comparendo> requerimiento1B()
+	{
+		MaxHeapCP<Comparendo> elementos = clonar();
+		int num = elementos.darNumElementos();
+		MaxHeapCP<Comparendo> elementosFinales = new MaxHeapCP<Comparendo>();
+
+		for(int i = 0; i<num;i++)
+		{
+			Comparendo este = elementos.sacarMax();
+			este.cambiarComparacion(2);
+
+
+			elementosFinales.agregar(este);
+		}
+
+		return elementosFinales;
+	}
+
+	public MaxHeapCP<Comparendo> requerimiento2B(String pmedio_dete,String pclase_vehi, String ptipo_servi,String plocalidad)
+	{
+		LLaves2B llave = new LLaves2B(pmedio_dete,pclase_vehi,ptipo_servi,plocalidad);
+		SeparateChaining<LLaves2B,MaxHeapCP<Comparendo>> estructura = new SeparateChaining<LLaves2B,MaxHeapCP<Comparendo>>();
+		MaxHeapCP<Comparendo> respuesta = new MaxHeapCP<Comparendo>();
+		MaxHeapCP<Comparendo> trabajable = clonar();
+
+		int corredor = trabajable.darNumElementos();
+
+		for(int i = 0; i <corredor;i++)
+		{
+			Comparendo actual = trabajable.sacarMax();
+			actual.cambiarComparacion(0);
+
+			LLaves2B llaveq = new LLaves2B(actual.darMedioDeteccion(),actual.darClaseVeiculo(),actual.darTipoServicio(),actual.darLocalidad());
+
+
+			MaxHeapCP<Comparendo> agregada = new MaxHeapCP<Comparendo>();
+			if(estructura.get(llaveq) == null)
+			{
+				agregada.agregar(actual);
+			}
+			else
+			{
+				MaxHeapCP<Comparendo> estano = estructura.delete(llaveq);
+				estano.agregar(actual);
+				agregada = estano;
+			}
+
+
+			estructura.put(llaveq, agregada);
+		}
+
+		respuesta = estructura.get(llave);
+
+		return respuesta;
+	}
+	
+	public MaxHeapCP<Comparendo> requerimiento3B(String pLatitudInicial,String pLatitudFinal, String pTipoVeiculo)
+	{
+		MaxHeapCP<Comparendo> respuesta = new MaxHeapCP<Comparendo>();
+		
+		return respuesta;
+	}
+	
+	public SeparateChaining<Date,MaxHeapCP<Comparendo>> requerimiento1C(int rango)
+	{
+		SeparateChaining<Date,MaxHeapCP<Comparendo>> estructura = new SeparateChaining<Date,MaxHeapCP<Comparendo>>();
+		
+		return estructura;
+	}
+	
+	public ArbolRojoNegro<Date,MaxHeapCP<Comparendo>> requerimiento2C()
+	{
+		ArbolRojoNegro<Date,MaxHeapCP<Comparendo>> estructura = new ArbolRojoNegro<Date,MaxHeapCP<Comparendo>>();
+		
+		return estructura;
+	}
+	
+	public ArbolRojoNegro<Date,MaxHeapCP<Comparendo>> requerimiento3C()
+	{
+		ArbolRojoNegro<Date,MaxHeapCP<Comparendo>> estructura = new ArbolRojoNegro<Date,MaxHeapCP<Comparendo>>();
+		
+		return estructura;
+	}
+	
+
+	public MaxHeapCP<Comparendo> clonar()
+	{
+		MaxHeapCP<Comparendo> nueva =  new MaxHeapCP<Comparendo>();
+		MaxHeapCP<Comparendo> vieja =  new MaxHeapCP<Comparendo>();
+		int cor = listaCarga.darNumElementos();
+
+		for(int i = 0; i<cor;i++)
+		{
+			Comparendo agre = listaCarga.sacarMax();
+			nueva.agregar(agre);
+			vieja.agregar(agre);
+		}
+
+		listaCarga = vieja;
+
+		return nueva;			
+	}
+
+	public String indicarMes(int inicial)
+	{
+		if(inicial == 0)
+			return "Enero";
+		else if(inicial == 1)
+			return "Febrero";
+		else if(inicial == 2)
+			return "Marzo";
+		else if(inicial == 3)
+			return "Abril";
+		else if(inicial == 4)
+			return "Mayo";
+		else if(inicial == 5)
+			return "Junio";
+		else if(inicial == 6)
+			return "Julio";
+		else if(inicial == 7)
+			return "Agosto";
+		else if(inicial == 8)
+			return "Septiembre";
+		else if(inicial == 9)
+			return "Octubre";
+		else if(inicial == 10)
+			return "Noviembre";
+		else if(inicial == 11)
+			return "Diciembre";
+
+		return "";
+	}
+
+	public int indicarDia(String inicial)
+	{
+		if(inicial.equalsIgnoreCase("L"))
+			return 1;
+		else if(inicial.equalsIgnoreCase("M"))
+			return 2;
+		else if(inicial.equalsIgnoreCase("I"))
+			return 3;
+		else if(inicial.equalsIgnoreCase("J"))
+			return 4;
+		else if(inicial.equalsIgnoreCase("V"))
+			return 5;
+		else if(inicial.equalsIgnoreCase("S"))
+			return 6;
+		else if(inicial.equalsIgnoreCase("D"))
+			return 0;
+		return -1;
+	}
+
+	public String indicarDia2(String inicial)
+	{
+		if(inicial.equalsIgnoreCase("L"))
+			return "Lunes";
+		else if(inicial.equalsIgnoreCase("M"))
+			return "Martes";
+		else if(inicial.equalsIgnoreCase("I"))
+			return "Miercoles";
+		else if(inicial.equalsIgnoreCase("J"))
+			return "Jueves";
+		else if(inicial.equalsIgnoreCase("V"))
+			return "Viernes";
+		else if(inicial.equalsIgnoreCase("S"))
+			return "Sabado";
+		else if(inicial.equalsIgnoreCase("D"))
+			return "Domingo";
+		return "";
+	}
+
+	public String tranformarTipoVeculo(String lista)
 	{
 		String listica = "";
 
@@ -235,76 +377,115 @@ public class Modelo
 
 		return listica;
 	}
-
-	public MaxHeapCP<Comparendo> requerimiento1(Date pFacha, String pClase, String pInfraccion)
-	{
-		MaxHeapCP<Comparendo> lista = new MaxHeapCP<Comparendo>();
-		LavesCompuestas llave = new LavesCompuestas(pFacha,pClase,pInfraccion);
-
-		if(linear.get(llave) != null)
-		{
-			Queue<Comparendo> otra = linear.delete(llave);
-
-
-			while(otra.getSize() !=0)
-			{
-				lista.agregar(otra.dequeue());
-			}
-		}
-		return lista;
-	}
-
-	public MaxHeapCP<Comparendo> requerimiento2(Date pFacha, String pClase, String pInfraccion)
-	{
-		MaxHeapCP<Comparendo> lista = new MaxHeapCP<Comparendo>();
-		LavesCompuestas llave = new LavesCompuestas(pFacha,pClase,pInfraccion);
-
-		if(sequential.get(llave) != null)
-		{
-			Queue<Comparendo> otra = sequential.delete(llave);
-
-
-			while(otra.getSize() !=0)
-			{
-				lista.agregar(otra.dequeue());
-			}
-		}
-		return lista;
-	}
 	
-	public void rellenarColas() throws ParseException
+	public String tranformarMedioDeteccion(String lista)
 	{
-		SimpleDateFormat parser=new SimpleDateFormat("yyyy-MM-dd");
-		String s11 = "2019-08-08";
-		Date FECHA_HORA1 = parser.parse(s11);		
-		String tipo1 = "MOTOCICLETA";
-		String tipo2 = "C40";
-		LavesCompuestas llave = new LavesCompuestas(FECHA_HORA1,tipo1,tipo2);
-		
-		for(int i = 0; i<2000;i++)
+		String listica = "";
+
+		if(lista.equals("1"))
 		{
-			cola1.enqueue(llave);
-			cola2.enqueue(llave);
+			listica = "AUTOMÃ“VIL";
+		} 
+		else if(lista.equals("2"))
+		{
+			listica = "DEAP";
 		}
 		
+
+		return listica;
 	}
 	
-	public void tiempoDeGetEnLinearProbing()
+	public String tranformarTipoServicio(String lista)
 	{
-		int tamano = cola1.getSize();
-		for(int i = 0;i<tamano;i++)
+		String listica = "";
+
+		if(lista.equals("1"))
 		{
-			linear.get(cola1.dequeue());
+			listica = "PÃºblico";
+		} 
+		else if(lista.equals("2"))
+		{
+			listica = "Oficial";
 		}
+		else if(lista.equals("3"))
+		{
+			listica = "Particular";
+		}
+		
+
+		return listica;
 	}
 	
-	public void tiempoDeGetEnSeparateChaining()
+	public String transformarLocalidad(String lista)
 	{
-		int tamano = cola2.getSize();
-		for(int i = 0;i<tamano;i++)
+		String listica = "";
+
+		if(lista.equals("1"))
 		{
-			sequential.get(cola2.dequeue());
+			listica = "PUENTE ARANDA";
+		} 
+		else if(lista.equals("2"))
+		{
+			listica = "FONTIBON";
 		}
+		else if(lista.equals("3"))
+		{
+			listica = "ENGATIVA";
+		}
+		else if(lista.equals("4"))
+		{
+			listica = "SUBA";
+		}
+		else if(lista.equals("5"))
+		{
+			listica = "USME";
+		}
+		else if(lista.equals("6"))
+		{
+			listica = "CIUDAD BOLIVAR";
+		}
+		else if(lista.equals("7"))
+		{
+			listica =  "USAQUEN";
+		}
+		else if(lista.equals("8"))
+		{
+			listica = "BOSA";
+		}
+		else if(lista.equals("9"))
+		{
+			listica = "SAN CRISTOBAL";
+		}
+		else if(lista.equals("10"))
+		{
+			listica = "KENNEDY";
+		}
+		else if(lista.equals("11"))
+		{
+			listica = "CHAPINERO";
+		}
+		else if(lista.equals("12"))
+		{
+			listica = "MARTIRES";
+		}
+		else if(lista.equals("13"))
+		{
+			listica =  "BARRIOS UNIDOS";
+		}
+		else if(lista.equals("14"))
+		{
+			listica =  "TUNJUELITO";
+		}
+		else if(lista.equals("15"))
+		{
+			listica =  "SANTA FE";
+		}
+		else if(lista.equals("16"))
+		{
+			listica =  "ANTONIO NARIÃ‘O";
+		}
+
+		return listica;
 	}
 }
 

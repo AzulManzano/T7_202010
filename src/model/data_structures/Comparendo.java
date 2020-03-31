@@ -17,6 +17,10 @@ public class Comparendo implements Comparable<Comparendo>
 	private double latitud;
 	private double longitud;
 
+	private int comparacion;
+	
+	private Haversine distanciador;
+
 
 
 	public Comparendo(int objeId, Date fecha, String descripcion, String detencion, String claseVeh, String tipoSer, String codInfraccion, String localidadP, double lonP, double latP)
@@ -31,35 +35,108 @@ public class Comparendo implements Comparable<Comparendo>
 		localidad = localidadP;
 		longitud = lonP;
 		latitud = latP;
+
+		comparacion =0;
+		distanciador = new Haversine();
+	}
+
+	public String darLocalidad()
+	{
+		return localidad;
+	}
+	
+	public String darMedioDeteccion()
+	{
+		return medio_dete;
+	}
+	
+	public String darClaseVeiculo()
+	{
+		return clase_vehi;
+	}
+	
+	public String darTipoServicio()
+	{
+		return tipo_servi;
 	}
 	
 	public String darCarro()
 	{
 		return clase_vehi;
 	}
-	
+
+	public Date darFecha()
+	{
+		return fecha_hora;
+	}
+
 	public double darLatitud()
 	{
 		return latitud;
 	}
 	
+	public double darLongitud()
+	{
+		return longitud;
+	}
+
 	public int darObjec()
 	{
 		return objectId;
 	}
 
-	//	OBJECTID, FECHA_HORA, INFRACCION, CLASE_VEHI, TIPO_SERVI, LOCALIDAD
+	public String darInfraccion()
+	{
+		return infraccion;
+	}
+
+	public int darComparador()
+	{
+		return comparacion;
+	}
+
+	public String darTipoVeiculo()
+	{
+		return tipo_servi;
+	}
+
+	public void cambiarComparacion(int cam)
+	{
+		comparacion = cam;
+	}
+
+	//	OBJECTID, FECHA_HORA, INFRACCION,CLASE_VEHICULO, TIPO_SERVICIO, LOCALIDAD
+
+	public String darInformacionDeCarga()
+	{
+		return "[OBJECTID: " + objectId+ ", FECHA_HORA,: " + fecha_hora + ", INFRACCION: "+ infraccion+ ", CLASE_VEHICULO: "+ clase_vehi + ", TIPO_SERVICIO: " + tipo_servi +", LOCALIDAD: " + localidad + "]";
+	}
 	public String darInformacion()
 	{
 		return "[OBJECTID: " + objectId+ ", FECHA_HORA,: " + fecha_hora + ", LOCALIDAD: " + localidad + ", INFRACCION: "+ infraccion + "]";
 	}
-	
+
 	public String darDatos()
 	{
 		return "[OBJECTID: " + objectId+ ", FECHA_HORA,: " + fecha_hora + ", TIPO_SERVI: " + tipo_servi + ", CLASE_VEHI: "+ clase_vehi + ", INFRACCION: "+ infraccion + "]";
 	}
+	//	 id, tipo de servicio, infracción, fecha-hora, clase de vehículo, longitud y latitud geográficas.
 
-	@Override
+	public String darInformacion1A()
+	{
+		return "[OBJECTID: " + objectId+ ", TIPO_SERVI: " + tipo_servi+", INFRACCION: "+ infraccion+", FECHA_HORA,: " + fecha_hora + ", CLASE_VEHI: "+ clase_vehi + "]";
+	}
+	
+	public String darInformacion1B()
+	{
+		return "[OBJECTID: " + objectId+ ", TIPO_SERVI: " + tipo_servi+", INFRACCION: "+ infraccion+", FECHA_HORA,: " + fecha_hora + ", CLASE_VEHI: "+ clase_vehi +", LATITUD: " + latitud + ", LONGITUD: "+longitud+" - "+distanciador.distance(4.647586, -74.078122, this.darLatitud(), this.darLongitud())+"]";
+	}
+
+	public String darInformacion2B()
+	{
+		return "[OBJECTID: " + objectId+ ", TIPO_SERVI: " + tipo_servi+", INFRACCION: "+ infraccion+", FECHA_HORA,: " + fecha_hora + ", CLASE_VEHI: "+ clase_vehi + ", LOCALIDAD: " + localidad + "]";
+	}
+	
 	public String toString() {
 		return "Comparendo [OBJECTID=" + objectId + ", FECHA_HORA=" + fecha_hora + ", DES_INFRAC=" + des_infrac
 				+ ", MEDIO_DETE=" + medio_dete + ", CLASE_VEHI=" + clase_vehi + ", TIPO_SERVI=" + tipo_servi
@@ -67,24 +144,92 @@ public class Comparendo implements Comparable<Comparendo>
 				+ longitud + "]";
 	}
 
-	@Override
+
 	public int compareTo(Comparendo arg) 
 	{
 		int valor = 101;
-
-		if(this.darObjec()>arg.darObjec())
+		if(comparacion == 0)
 		{
-			valor = 1;
+			if(this.darObjec()>arg.darObjec())
+			{
+				valor = 1;
+			}
+			else if(this.darObjec()<arg.darObjec())
+			{
+				valor = -1;
+			}
+			else if(this.darObjec()==arg.darObjec())
+			{
+				valor = 0;
+			}
 		}
-		else if(this.darObjec()<arg.darObjec())
+		else if(comparacion == 1)
 		{
-			valor = -1;
+			if(this.darTipoVeiculo().equalsIgnoreCase("PÃºblico") && (arg.darTipoVeiculo().equalsIgnoreCase("Oficial") || arg.darTipoVeiculo().equalsIgnoreCase("Particular")))
+			{
+				valor = 1;
+			}
+			else if(this.darTipoVeiculo().equalsIgnoreCase("Oficial") && arg.darTipoVeiculo().compareTo("Oficial") !=0)
+			{
+				if(arg.darTipoVeiculo().equalsIgnoreCase("PÃºblico"))
+				{
+					valor = -1;
+				}
+				else if(arg.darTipoVeiculo().equalsIgnoreCase("Particular"))
+				{
+					valor = 1;
+				}	
+			}
+			else if(this.darTipoVeiculo().equalsIgnoreCase("Particular") && (arg.darTipoVeiculo().equalsIgnoreCase("Oficial") || arg.darTipoVeiculo().equalsIgnoreCase("PÃºblico")))
+			{
+				valor = -1;
+			}
+			else if(this.darTipoVeiculo().equalsIgnoreCase(arg.darTipoVeiculo()))
+			{
+				if(this.darInfraccion().compareTo(arg.darInfraccion())>0)
+				{
+					valor = 1;
+				}
+				else if(this.darInfraccion().compareTo(arg.darInfraccion())<0)
+				{
+					valor = -1;
+				}
+				else if(this.darInfraccion().compareTo(arg.darInfraccion())==0)
+				{
+					if(this.darObjec()>arg.darObjec())
+					{
+						valor = 1;
+					}
+					else if(this.darObjec()<arg.darObjec())
+					{
+						valor = -1;
+					}
+					else if(this.darObjec()==arg.darObjec())
+					{
+						valor = 0;
+					}
+				}
+			}
 		}
-		else if(this.darObjec()==arg.darObjec())
+		else if(comparacion == 2)
 		{
-			valor = 0;
+			if(distanciador.distance(4.647586, -74.078122, this.darLatitud(), this.darLongitud())<distanciador.distance(4.647586, -74.078122, arg.darLatitud(), arg.darLongitud()))
+			{
+				valor = 1;
+			}
+			else if(distanciador.distance(4.647586, -74.078122, this.darLatitud(), this.darLongitud())>distanciador.distance(4.647586, -74.078122, arg.darLatitud(), arg.darLongitud()))
+			{
+				valor = -1;
+			}
+			else if(distanciador.distance(4.647586, -74.078122, this.darLatitud(), this.darLongitud()) == distanciador.distance(4.647586, -74.078122, arg.darLatitud(), arg.darLongitud()))
+			{
+				valor = 0;
+			}
 		}
 
 		return valor;
 	}
+
+
+
 }

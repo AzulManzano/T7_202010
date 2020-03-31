@@ -17,6 +17,7 @@ public class MaxHeapCP<T extends Comparable<T>> implements IMaxHeapCP<T>
 	 * Atributo que hace referencia al tamaño.
 	 */
 	private int tamano;
+	
 
 	//----------------------------------------------------------------
 	//Constructor ----------------------------------------------------
@@ -27,6 +28,7 @@ public class MaxHeapCP<T extends Comparable<T>> implements IMaxHeapCP<T>
 	 */
 	public MaxHeapCP(int capacidad)
 	{
+
 		tamano = 0;
 		elementos = (T[]) new Comparable[capacidad + 1];
 	}
