@@ -56,7 +56,7 @@ public class Controller
 				view.printMessage("El total de comparendos cargados son: "+modelo.darTotalComparendos());
 				view.printMessage("");
 				view.printMessage("-El comparendo con el mayor OBJECTID encontrado fue:");
-				view.printMessage("  "+ modelo.darListaDeCarga().sacarMax().darInformacionDeCarga());
+				view.printMessage("  "+ modelo.darListaDeCarga().darMax().darInformacionDeCarga());
 
 
 				view.printMessage("");
