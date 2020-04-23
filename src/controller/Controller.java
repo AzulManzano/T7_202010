@@ -269,7 +269,7 @@ public class Controller
 				view.printMessage("Número de días en promedio que |  "+modelo.promedioDeDias2C());
 				view.printMessage("  debe esperar un comparendo   |");
 				view.printMessage("");
-				view.printMessage("");
+				view.printMessage(modelo.tablaInformacion());
 				break;
 
 			case 10:
@@ -293,7 +293,7 @@ public class Controller
 				view.printMessage("Número de días en promedio que |  "+modelo.promedioDeDias3C());
 				view.printMessage("  debe esperar un comparendo   |");
 				view.printMessage("");
-				view.printMessage("");
+				view.printMessage(modelo.tablaNuevoSistema());
 				break;
 
 			case 11:			
