@@ -18,8 +18,10 @@ public class Comparendo implements Comparable<Comparendo>
 	private double longitud;
 
 	private int comparacion;
-	
+
 	private Haversine distanciador;
+	
+	private int numeroDias;
 
 
 
@@ -38,28 +40,35 @@ public class Comparendo implements Comparable<Comparendo>
 
 		comparacion =0;
 		distanciador = new Haversine();
+		
+		numeroDias = 0;
 	}
 
+	public int darNumerosDias()
+	{
+		return numeroDias;
+	}
+	
 	public String darLocalidad()
 	{
 		return localidad;
 	}
-	
+
 	public String darMedioDeteccion()
 	{
 		return medio_dete;
 	}
-	
+
 	public String darClaseVeiculo()
 	{
 		return clase_vehi;
 	}
-	
+
 	public String darTipoServicio()
 	{
 		return tipo_servi;
 	}
-	
+
 	public String darCarro()
 	{
 		return clase_vehi;
@@ -74,7 +83,7 @@ public class Comparendo implements Comparable<Comparendo>
 	{
 		return latitud;
 	}
-	
+
 	public double darLongitud()
 	{
 		return longitud;
@@ -104,6 +113,11 @@ public class Comparendo implements Comparable<Comparendo>
 	{
 		comparacion = cam;
 	}
+	
+	public String darDescripcion()
+	{
+		return des_infrac;
+	}
 
 	//	OBJECTID, FECHA_HORA, INFRACCION,CLASE_VEHICULO, TIPO_SERVICIO, LOCALIDAD
 
@@ -127,16 +141,25 @@ public class Comparendo implements Comparable<Comparendo>
 		return "[OBJECTID: " + objectId+ ", TIPO_SERVI: " + tipo_servi+", INFRACCION: "+ infraccion+", FECHA_HORA,: " + fecha_hora + ", CLASE_VEHI: "+ clase_vehi + "]";
 	}
 	
-	public String darInformacion1B()
+	public String darInformacion3A()
 	{
-		return "[OBJECTID: " + objectId+ ", TIPO_SERVI: " + tipo_servi+", INFRACCION: "+ infraccion+", FECHA_HORA,: " + fecha_hora + ", CLASE_VEHI: "+ clase_vehi +", LATITUD: " + latitud + ", LONGITUD: "+longitud+" - "+distanciador.distance(4.647586, -74.078122, this.darLatitud(), this.darLongitud())+"]";
+		return "[OBJECTID: " + objectId+ ", TIPO_SERVI: " + tipo_servi+", INFRACCION: "+ infraccion+", FECHA_HORA,: " + fecha_hora + ", CLASE_VEHI: "+ clase_vehi + ", LOCALIDAD: " + localidad +"]";
 	}
 
+	public String darInformacion1B()
+	{
+		return "[OBJECTID: " + objectId+ ", TIPO_SERVI: " + tipo_servi+", INFRACCION: "+ infraccion+", FECHA_HORA,: " + fecha_hora + ", CLASE_VEHI: "+ clase_vehi +", LATITUD: " + latitud + ", LONGITUD: "+longitud+"]";
+	}
+
+	 public String darInformacion3B()
+		{
+			return "[OBJECTID: " + objectId+ ", TIPO_SERVI: " + tipo_servi+", INFRACCION: "+ infraccion+", FECHA_HORA,: " + fecha_hora + ", CLASE_VEHI: "+ clase_vehi + ", LATITUD: " + latitud +"]";
+		}
 	public String darInformacion2B()
 	{
 		return "[OBJECTID: " + objectId+ ", TIPO_SERVI: " + tipo_servi+", INFRACCION: "+ infraccion+", FECHA_HORA,: " + fecha_hora + ", CLASE_VEHI: "+ clase_vehi + ", LOCALIDAD: " + localidad + "]";
 	}
-	
+
 	public String toString() {
 		return "Comparendo [OBJECTID=" + objectId + ", FECHA_HORA=" + fecha_hora + ", DES_INFRAC=" + des_infrac
 				+ ", MEDIO_DETE=" + medio_dete + ", CLASE_VEHI=" + clase_vehi + ", TIPO_SERVI=" + tipo_servi
@@ -226,10 +249,128 @@ public class Comparendo implements Comparable<Comparendo>
 				valor = 0;
 			}
 		}
+		else if(comparacion == 3)
+		{
+			if(this.darFecha().compareTo(arg.darFecha())<0)
+			{
+				valor = 1;
+			}
+			else if(this.darFecha().compareTo(arg.darFecha())>0)
+			{
+				valor = -1;
+			}
+			else if(this.darFecha().compareTo(arg.darFecha())==0)
+			{
+				valor = 0;
+			}
+		}
+		else if(comparacion == 4)
+		{
+			if(this.darDescripcion().contains("INMOVILIZADO") == true && arg.darDescripcion().contains("INMOVILIZADO") == false)
+			{
+				valor = 1;
+			}
+			else if(this.darDescripcion().contains("INMOVILIZADO") == true && arg.darDescripcion().contains("INMOVILIZADO") == true)
+			{
+				if(this.darObjec()>arg.darObjec())
+				{
+					valor = 1;
+				}
+				else if(this.darObjec()<arg.darObjec())
+				{
+					valor = -1;
+				}
+				else if(this.darObjec()==arg.darObjec())
+				{
+					valor = 0;
+				}
+			}
+			
+			else if(this.darDescripcion().contains("LICENCIA") == true && arg.darDescripcion().contains("INMOVILIZADO") == true)
+			{
+				valor = -1;
+			}
+			else if(this.darDescripcion().contains("LICENCIA") == true && arg.darDescripcion().contains("LICENCIA") == true)
+			{
+				if(this.darObjec()>arg.darObjec())
+				{
+					valor = 1;
+				}
+				else if(this.darObjec()<arg.darObjec())
+				{
+					valor = -1;
+				}
+				else if(this.darObjec()==arg.darObjec())
+				{
+					valor = 0;
+				}
+			}
+			else if(this.darDescripcion().contains("LICENCIA") == true && arg.darDescripcion().contains("INMOVILIZADO") == false && arg.darDescripcion().contains("LICENCIA") == false)
+			{
+				valor = 1;
+			}
+			
+			else if(this.darDescripcion().contains("LICENCIA") == false && this.darDescripcion().contains("INMOVILIZADO") == false && (arg.darDescripcion().contains("INMOVILIZADO") == true || arg.darDescripcion().contains("LICENCIA") == true))
+			{
+				valor = -1;
+			}
+			else if(this.darDescripcion().contains("LICENCIA") == false && this.darDescripcion().contains("INMOVILIZADO") == false && arg.darDescripcion().contains("INMOVILIZADO") == false && arg.darDescripcion().contains("LICENCIA") == false)
+			{
+				if(this.darObjec()>arg.darObjec())
+				{
+					valor = 1;
+				}
+				else if(this.darObjec()<arg.darObjec())
+				{
+					valor = -1;
+				}
+				else if(this.darObjec()==arg.darObjec())
+				{
+					valor = 0;
+				}
+			}
+		}
 
 		return valor;
 	}
+	
+	public void cambiarDia(Date fecha)
+	{
+		numeroDias =numeroDiaAno(fecha)- numeroDiaAno(fecha_hora);
+	}
+	
 
+	private int numeroDiaAno(Date fecha)
+	{
+		int respuesta = 0;
+		
+		if(fecha.getMonth() == 0)
+			respuesta = fecha.getDate();
+		else if(fecha.getMonth() == 1)
+			respuesta = fecha.getDate() +31;
+		else if(fecha.getMonth() == 2)
+			respuesta = fecha.getDate() +59;
+		else if(fecha.getMonth() == 3)
+			respuesta = fecha.getDate() +90;
+		else if(fecha.getMonth() == 4)
+			respuesta = fecha.getDate() +120;
+		else if(fecha.getMonth() == 5)
+			respuesta = fecha.getDate() +151;
+		else if(fecha.getMonth() == 6)
+			respuesta = fecha.getDate() +181;
+		else if(fecha.getMonth() == 7)
+			respuesta = fecha.getDate() +212;
+		else if(fecha.getMonth() == 8)
+			respuesta = fecha.getDate() +243;
+		else if(fecha.getMonth() == 9)
+			respuesta = fecha.getDate() +273;
+		else if(fecha.getMonth() == 10)
+			respuesta = fecha.getDate() +304;
+		else if(fecha.getMonth() == 11)
+			respuesta = fecha.getDate() +334;
+			
+		return respuesta;
+	}
 
 
 }

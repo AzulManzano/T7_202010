@@ -99,7 +99,35 @@ public class Controller
 				break;
 
 			case 4:
+				view.printMessage("");
+				view.printMessage("BUSCAR LOS COMPARENDOS QUE TIENEN UNA FECHA-HORA EN UN RANGO Y QUE SON DE UNA LOCALIDAD DADA.");
+				view.printMessage("Ingrese la fecha que servira como limite inferior en el seguiente formato (YYYY/MM/DD-HH:MM:ss)");
+				String fechaInicio = lector.next();
+				view.printMessage("Ingrese la fecha que servira como limite superior en el seguiente formato (YYYY/MM/DD-HH:MM:ss)");
+				String fechaFinal = lector.next();
+				view.printMenuLocalidad();
+				String loca = lector.next();
+				view.printMessage(" - La infrmacion de loc comparendos que cumplen esta propiedad es:");
 
+				String localidad = modelo.transformarLocalidad(loca);
+
+
+
+				MaxHeapCP<Comparendo> elemeto3A = modelo.requerimiento3A(fechaInicio, fechaFinal, localidad);
+
+				int tam = elemeto3A.darNumElementos();
+				if(tam != 0)
+				{
+
+					for(int i = 0; i<20;i++)
+					{
+						view.printMessage(elemeto3A.sacarMax().darInformacion3A());
+					}
+				}
+				else
+					view.printMessage("No hay comparendos que cumplan estos requerimientos");
+				view.printMessage("");
+				view.printMessage("");
 				break;
 
 			case 5:
@@ -161,19 +189,111 @@ public class Controller
 				break;
 
 			case 7:
+				view.printMessage("BUSCAR LOS COMPARENDOS QUE TIENEN UNA LATITUD EN UN RANGO DADO Y QUE INVOLUCRARON UN TIPO DE VEHÍCULO PARTICULAR");			
+				view.printMessage("Ingrese la latitud que servira como limite inferir ");
+				Double latinai = lector.nextDouble();
+				view.printMessage("Ingrese la latitud que servira como limite superior ");
+				Double latFinal = lector.nextDouble();
+				view.printMenuTipoVeiculo();
+				String v = lector.next();
+				view.printMessage(" - La informacion de los comparendos que cumplen esta propiedad es:");
 
+				String veic = modelo.tranformarTipoVeculo(v);
+
+				MaxHeapCP<Comparendo> elemeto3B = modelo.requerimiento3B(latinai, latFinal, veic);
+
+				int tam3B = elemeto3B.darNumElementos();
+				if(tam3B != 0)
+				{
+
+					for(int i = 0; i<tam3B;i++)
+					{
+						view.printMessage(elemeto3B.sacarMax().darInformacion3B());
+					}
+				}
+				else
+					view.printMessage("No hay comparendos que cumplan estos requerimientos");
+				view.printMessage("");
+				view.printMessage("");
 				break;
 
 			case 8:
+				view.printMessage("VISUALIZAR DATOS EN UNA TABLA ASCII");
+				view.printMessage("Ingrese el numero de dias que quiere ver por rango:");
+				int tamanoArreglo = lector.nextInt();
+				view.printMessage("");
+				view.printMessage("Rango de fechas        |  Comparendos durante el año");
+				view.printMessage("----------------------------------------------------");
 
+				boolean termine = false;
+				int i = tamanoArreglo;
+				int j = 1;
+				while(termine == false )
+				{
+					if(i>=365)
+					{
+						i=365;
+						termine = true;
+					}
+					view.printMessage(modelo.requerimiento1C(j, i, tamanoArreglo*5));
+					i+= tamanoArreglo;
+					j+= tamanoArreglo;
+
+
+				}
+
+				view.printMessage("");
+				view.printMessage("Cada * representa "+ tamanoArreglo*5 +" Comparendos");
+				view.printMessage("");
+				view.printMessage("");
 				break;
 
 			case 9:
-
+				view.printMessage("EL COSTO DE LOS TIEMPOS DE ESPERA HOY EN DÍA (COLA)");
+				view.printMessage("");
+				view.printMessage("Fecha       | Comparendos procesados          ***");
+				view.printMessage("            | Comparendos que están en espera ###");
+				view.printMessage("-------------------------------------------------");
+				for(int k = 1; k<366;k++)
+				{
+					view.printMessage(modelo.requerimiento2C(k, k+1, 50));
+				}
+				view.printMessage("");
+				view.printMessage("Cada * y # representa 50 Comparendos");
+				view.printMessage("");
+				view.printMessage("INFORMACION ADICIONAL");
+				view.printMessage("----------------------------------------------------------");
+				view.printMessage("Costo total que generan las    |  $"+ modelo.darCostoCola());
+				view.printMessage("  penalizaciones en 2018       |");
+				view.printMessage("----------------------------------------------------------");
+				view.printMessage("Número de días en promedio que |  "+modelo.promedioDeDias2C());
+				view.printMessage("  debe esperar un comparendo   |");
+				view.printMessage("");
+				view.printMessage("");
 				break;
 
 			case 10:
-
+				view.printMessage("EL COSTO DE LOS TIEMPOS DE ESPERA USANDO EL NUEVO SISTEMA");
+				view.printMessage("");
+				view.printMessage("Fecha       | Comparendos procesados          ***");
+				view.printMessage("            | Comparendos que están en espera ###");
+				view.printMessage("-------------------------------------------------");
+				for(int k = 1; k<366;k++)
+				{
+					view.printMessage(modelo.requerimiento3C(k, k+1, 50));
+				}
+				view.printMessage("");
+				view.printMessage("Cada * y # representa 50 Comparendos");
+				view.printMessage("");
+				view.printMessage("INFORMACION ADICIONAL");
+				view.printMessage("----------------------------------------------------------");
+				view.printMessage("Costo total que generan las    |  $"+modelo.darCostoMaxHeap());
+				view.printMessage("  penalizaciones en 2018       |");
+				view.printMessage("----------------------------------------------------------");
+				view.printMessage("Número de días en promedio que |  "+modelo.promedioDeDias3C());
+				view.printMessage("  debe esperar un comparendo   |");
+				view.printMessage("");
+				view.printMessage("");
 				break;
 
 			case 11:			

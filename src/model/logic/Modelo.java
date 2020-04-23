@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -37,11 +38,29 @@ public class Modelo
 	public static String PATH = "./data/Comparendos_DEI_2018_Bogotá_D.C_50000_.geojson";
 	// PORFAVOR LEER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	private MaxHeapCP<Comparendo> listaCarga;
-
+	private RedBlackBST<Date,Comparendo> arbol = new RedBlackBST<Date,Comparendo>();
+	private Queue<Comparendo> estructuraAplicacion2C;
+	private MaxHeapCP<Comparendo> estructura3C;
+	
+	double costoCola;
+	double costoMaxHeap;
+	
+	
+	int numeroDiasTotales2C;
+	int numeroComparendos2C;
+	
+	
+	int numeroDiasTotales3C;
+	int numeroComparendos3C;
 
 	public Modelo()
 	{
 		listaCarga = new MaxHeapCP<Comparendo>();
+		estructuraAplicacion2C = new Queue<Comparendo>();
+		estructura3C = new MaxHeapCP<Comparendo>();
+		
+		costoCola = 0;
+		costoMaxHeap =0;
 	}
 
 
@@ -50,6 +69,21 @@ public class Modelo
 	public MaxHeapCP<Comparendo> darListaDeCarga()
 	{
 		return listaCarga;
+	}
+
+	public RedBlackBST<Date,Comparendo> darArbol()
+	{
+		return arbol;
+	}
+	
+	public double darCostoCola()
+	{
+		return costoCola;
+	}
+	
+	public double darCostoMaxHeap()
+	{
+		return costoMaxHeap;
 	}
 	//---------------------------------------------
 
@@ -98,6 +132,7 @@ public class Modelo
 				Comparendo c = new Comparendo(OBJECTID, FECHA_HORA, DES_INFRAC, MEDIO_DETE, CLASE_VEHI, TIPO_SERVI, INFRACCION, LOCALIDAD, longitud, latitud);
 
 				listaCarga.agregar(c);
+				arbol.put(FECHA_HORA, c);
 			}
 
 		} catch (FileNotFoundException | ParseException e) {
@@ -163,11 +198,45 @@ public class Modelo
 
 		return respuesta;
 	}
-	
-	public MaxHeapCP<Comparendo> requerimiento3A(String pFechaInicio,String pFechaFinal, String pLocalidad)
+
+	public MaxHeapCP<Comparendo> requerimiento3A(String pFechaInicio,String pFechaFinal, String pLocalidad) throws ParseException
 	{
+		MaxHeapCP<Comparendo> elementos = clonar();
 		MaxHeapCP<Comparendo> respuesta = new MaxHeapCP<Comparendo>();
-		
+
+		SimpleDateFormat parser = new SimpleDateFormat("YYYY/MM/DD-HH:MM:ss");
+		Date fechaInici = parser.parse("2018/11/10-00:00:00");
+		Date fechaFinal = parser.parse("2018/11/14-00:00:00");
+		System.out.println("Fecha inicial");
+		System.out.println(pFechaInicio);
+		System.out.println(fechaInici);
+		System.out.println("Fecha final");
+		System.out.println(pFechaFinal);
+		System.out.println(fechaFinal);
+
+		RedBlackBST<Date,Comparendo> arbol = new RedBlackBST<Date,Comparendo>();
+
+		int tam = elementos.darNumElementos();
+		for(int i = 0; i<tam; i++)
+		{
+			Comparendo este = elementos.sacarMax();
+			arbol.put(este.darFecha(), este);
+		}
+
+		Queue<Comparendo> datosPre = arbol.valuesInRange(fechaInici, fechaFinal);
+		int tamFnal = datosPre.getSize();
+		System.out.println(tamFnal);
+		for(int j = 0; j<tamFnal;j++)
+		{
+			Comparendo fin = datosPre.dequeue();
+			fin.cambiarComparacion(3);
+
+			if(fin.darLocalidad().equalsIgnoreCase(pLocalidad))
+			{
+				respuesta.agregar(fin);
+			}
+		}
+
 		return respuesta;
 	}
 
@@ -226,35 +295,318 @@ public class Modelo
 
 		return respuesta;
 	}
-	
-	public MaxHeapCP<Comparendo> requerimiento3B(String pLatitudInicial,String pLatitudFinal, String pTipoVeiculo)
+
+	public MaxHeapCP<Comparendo> requerimiento3B(double  pLatitudInicial,double pLatitudFinal, String pTipoVeiculo)
 	{
+		MaxHeapCP<Comparendo> elementos = clonar();
 		MaxHeapCP<Comparendo> respuesta = new MaxHeapCP<Comparendo>();
-		
+
+		RedBlackBST<Double,Comparendo> arbol = new RedBlackBST<Double,Comparendo>();
+
+		int tam = elementos.darNumElementos();
+		for(int i = 0; i<tam; i++)
+		{
+			Comparendo este = elementos.sacarMax();
+			arbol.put(este.darLatitud(), este);
+		}
+
+		Queue<Comparendo> datosPre = arbol.valuesInRange(pLatitudInicial, pLatitudFinal);
+
+		int tamFnal = datosPre.getSize();
+
+		for(int j = 0; j<tamFnal;j++)
+		{
+			Comparendo fin = datosPre.dequeue();
+			fin.cambiarComparacion(0);
+
+			if(fin.darClaseVeiculo().equalsIgnoreCase(pTipoVeiculo))
+			{
+				respuesta.agregar(fin);
+			}
+		}
+
+
 		return respuesta;
 	}
-	
-	public SeparateChaining<Date,MaxHeapCP<Comparendo>> requerimiento1C(int rango)
+
+	public String requerimiento1C(int rangoInicial, int rangoFinal, int tamno)
 	{
-		SeparateChaining<Date,MaxHeapCP<Comparendo>> estructura = new SeparateChaining<Date,MaxHeapCP<Comparendo>>();
+		MaxHeapCP<Comparendo> estructura = new MaxHeapCP<Comparendo>();
+
+		Date fechaInicio = new Date(118, 0,rangoInicial);
+		Date fechaDia = new Date(118, 0,rangoFinal);
+		Date fechaFinal = new Date(118, 0,rangoFinal+1);
+
+		Queue<Comparendo> datosPre = arbol.valuesInRange(fechaInicio, fechaFinal);
+
+		String respueta ="";
+		//		2018/01/01-2018/01/07 | ************
+
+		String diaInicial = fechaInicio.getDate()+"";
+		String mesInicail = fechaInicio.getMonth()+1+"";
+
+		String diaF = fechaDia.getDate()+"";
+		String mesF = fechaDia.getMonth()+1+"";
+
+		if(diaInicial.length() ==1)
+			diaInicial = "0"+diaInicial;
+		if(mesInicail.length() == 1)
+			mesInicail = "0"+mesInicail;
+		if(diaF.length() == 1)
+			diaF = "0"+diaF;
+		if(mesF.length() ==1)
+			mesF = "0"+mesF;
+
+		respueta = "2018/"+mesInicail+"/"+diaInicial+"-"+"2018/"+mesF+"/"+diaF+"  |  ";
+
+		int tamnoCola = datosPre.getSize();
+
+		boolean termine = false;
+
+		while(termine == false)
+		{
+			if(tamnoCola - tamno>=0)
+			{
+				tamnoCola = tamnoCola -tamno;
+				respueta = respueta +"*";
+			}
+			else
+				termine = true;
+
+		}
+
+		return respueta;
+	}
+
+	public String requerimiento2C(int rangoInicial, int rangoFinal, int tamno)
+	{	
 		
-		return estructura;
+		Date fechaInicio = new Date(118, 0,rangoInicial);
+		Date fechaFinal = new Date(118, 0,rangoFinal);
+		
+		calcularCosto(estructuraAplicacion2C,fechaInicio);
+		
+		Queue<Comparendo> comDia = arbol.valuesInRange(fechaInicio, fechaFinal);
+		
+		int tam = comDia.getSize();
+		
+		for(int i =0; i<tam; i++)
+		{
+			estructuraAplicacion2C.enqueue(comDia.dequeue());
+		}
+		
+		String respueta1 ="";
+		String respueta2 ="";
+		
+		String diaInicial = fechaInicio.getDate()+"";
+		String mesInicail = fechaInicio.getMonth()+1+"";
+		
+		if(diaInicial.length() ==1)
+			diaInicial = "0"+diaInicial;
+		if(mesInicail.length() == 1)
+			mesInicail = "0"+mesInicail;
+				
+		respueta1 = "2018/"+mesInicail+"/"+diaInicial+"  |  ";
+		respueta2 = "            |  ";
+		
+		int tamnoCola = estructuraAplicacion2C.getSize();
+
+		boolean termine = false;
+        int contador = 0;
+		while(termine == false)
+		{ 
+			
+			if(tamnoCola - tamno>=0)
+			{
+				contador++;
+				tamnoCola = tamnoCola - tamno;
+				respueta1 = respueta1 +"*";
+			}
+			else
+				termine = true;
+			if(contador == 2)
+				termine = true;
+			
+			if(contador == 0 && termine == true)
+				respueta1 = respueta1 +"*";
+		}
+
+		for(int i = 0; i<100 && estructuraAplicacion2C.isEmpty()==false; i++)
+		{
+			
+			Comparendo comaren= estructuraAplicacion2C.dequeue();
+			numeroDiasTotales2C += comaren.darNumerosDias();
+			numeroComparendos2C++;
+		}
+		
+		int tamanoTotal = estructuraAplicacion2C.getSize();
+		termine = false;
+		
+		while(termine == false)
+		{
+			if(tamanoTotal - tamno>=0)
+			{
+				tamanoTotal = tamanoTotal - tamno;
+				respueta2 = respueta2 +"#";
+			}
+			else
+				termine = true;
+		}
+		
+		return respueta1+"\n"+respueta2;
 	}
 	
-	public RedBlackBST<Date,MaxHeapCP<Comparendo>> requerimiento2C()
+	private void calcularCosto(Queue<Comparendo> cola, Date fecha)
 	{
-		RedBlackBST<Date,MaxHeapCP<Comparendo>> estructura = new RedBlackBST<Date,MaxHeapCP<Comparendo>>();
+		Queue<Comparendo> copia = new Queue<Comparendo>();
 		
-		return estructura;
+		int tam = cola.getSize();
+		
+		for(int i = 0; i < tam; i++)
+		{
+			Comparendo este = cola.dequeue();
+			este.cambiarDia(fecha);
+			copia.enqueue(este);
+			
+			if(este.darDescripcion().contains("INMOVILIZADO") == true)
+				costoCola+= 400;
+			else if(este.darDescripcion().contains("LICENCIA") == true)
+				costoCola+= 40;
+			else
+				costoCola+= 4;	
+		}	
+		estructuraAplicacion2C = copia;		
 	}
 	
-	public RedBlackBST<Date,MaxHeapCP<Comparendo>> requerimiento3C()
+	
+	public String promedioDeDias2C()
 	{
-		RedBlackBST<Date,MaxHeapCP<Comparendo>> estructura = new RedBlackBST<Date,MaxHeapCP<Comparendo>>();
+		for(int i = 0; estructuraAplicacion2C.isEmpty()==false; i++)
+		{
+			
+			Comparendo comaren= estructuraAplicacion2C.dequeue();
+			numeroDiasTotales2C += comaren.darNumerosDias();
+			numeroComparendos2C++;
+		}
 		
-		return estructura;
+		int valor = numeroDiasTotales2C/numeroComparendos2C;
+		return valor+"";
+	}
+
+	public String requerimiento3C(int rangoInicial, int rangoFinal, int tamno)
+	{
+		Date fechaInicio = new Date(118, 0,rangoInicial);
+		Date fechaFinal = new Date(118, 0,rangoFinal);
+		
+		calcularCostoNuevoSistema(estructura3C,fechaInicio);
+		
+		Queue<Comparendo> comDia = arbol.valuesInRange(fechaInicio, fechaFinal);
+		
+		
+		int tam = comDia.getSize();
+		
+		for(int i =0; i<tam; i++)
+		{
+			Comparendo este = comDia.dequeue();
+			este.cambiarComparacion(4);
+			estructura3C.agregar(este);
+		}
+		
+		String respueta1 ="";
+		String respueta2 ="";
+		
+		String diaInicial = fechaInicio.getDate()+"";
+		String mesInicail = fechaInicio.getMonth()+1+"";
+		
+		if(diaInicial.length() ==1)
+			diaInicial = "0"+diaInicial;
+		if(mesInicail.length() == 1)
+			mesInicail = "0"+mesInicail;
+				
+		respueta1 = "2018/"+mesInicail+"/"+diaInicial+"  |  ";
+		respueta2 = "            |  ";
+		
+		int tamnoCola = estructura3C.darNumElementos();
+
+		boolean termine = false;
+        int contador = 0;
+		while(termine == false)
+		{ 
+			
+			if(tamnoCola - tamno>=0)
+			{
+				contador++;
+				tamnoCola = tamnoCola - tamno;
+				respueta1 = respueta1 +"*";
+			}
+			else
+				termine = true;
+			if(contador == 2)
+				termine = true;
+			
+			if(contador == 0 && termine == true)
+				respueta1 = respueta1 +"*";
+		}
+		
+		for(int i = 0; i<100 && estructura3C.esVacia()==false; i++)
+		{
+			Comparendo compa = estructura3C.sacarMax();
+			numeroDiasTotales3C += compa.darNumerosDias();
+			numeroComparendos3C++;
+		}
+		
+		int tamanoTotal = estructura3C.darNumElementos();
+		termine = false;
+		
+		while(termine == false)
+		{
+			if(tamanoTotal - tamno>=0)
+			{
+				tamanoTotal = tamanoTotal - tamno;
+				respueta2 = respueta2 +"#";
+			}
+			else
+				termine = true;
+		}
+		
+		return respueta1+"\n"+respueta2;
+	}
+
+	private void calcularCostoNuevoSistema(MaxHeapCP<Comparendo> cola, Date fecha)
+	{
+		MaxHeapCP<Comparendo> copia = new MaxHeapCP<Comparendo>();
+		
+		int tam = cola.darNumElementos();
+		
+		for(int i = 0; i < tam; i++)
+		{
+			Comparendo este = cola.sacarMax();
+			este.cambiarDia(fecha);
+			este.cambiarComparacion(4);
+			copia.agregar(este);
+			
+			if(este.darDescripcion().contains("INMOVILIZADO") == true)
+				costoMaxHeap+= 400;
+			else if(este.darDescripcion().contains("LICENCIA") == true)
+				costoMaxHeap+= 40;
+			else
+				costoMaxHeap+= 4;	
+		}	
+		estructura3C = copia;		
 	}
 	
+	public String promedioDeDias3C()
+	{
+		for(int i = 0; estructura3C.esVacia()==false; i++)
+		{
+			Comparendo compa = estructura3C.sacarMax();
+			numeroDiasTotales3C += compa.darNumerosDias();
+			numeroComparendos3C++;
+		}
+		int valor = numeroDiasTotales3C/numeroComparendos3C;
+		return valor+"";
+	}
+
 
 	public MaxHeapCP<Comparendo> clonar()
 	{
@@ -377,7 +729,7 @@ public class Modelo
 
 		return listica;
 	}
-	
+
 	public String tranformarMedioDeteccion(String lista)
 	{
 		String listica = "";
@@ -390,11 +742,11 @@ public class Modelo
 		{
 			listica = "DEAP";
 		}
-		
+
 
 		return listica;
 	}
-	
+
 	public String tranformarTipoServicio(String lista)
 	{
 		String listica = "";
@@ -411,11 +763,11 @@ public class Modelo
 		{
 			listica = "Particular";
 		}
-		
+
 
 		return listica;
 	}
-	
+
 	public String transformarLocalidad(String lista)
 	{
 		String listica = "";
