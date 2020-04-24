@@ -31,11 +31,13 @@ import model.data_structures.SequentialSearch;
  */
 public class Modelo 
 {
+    //	Comparendos_DEI_2018_Bogotá_D.C_small_50000_sorted
+	//		
 	// PORFAVOR LEER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//Ya que mi computador no tiene la capacidad de leer los 500000 datos del archivo grande no pude hacer las tablas de datos con esa informacion, 
 	//por ese motivo tuve que trabajar con este archivo que solo tiene 50000. Gracias por tu comprension
 
-	public static String PATH = "./data/Comparendos_DEI_2018_Bogotá_D.C_50000_.geojson";
+	public static String PATH = "./data/Comparendos_DEI_2018_Bogotá_D.C_small_50000_sorted.geojson";
 	// PORFAVOR LEER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	private MaxHeapCP<Comparendo> listaCarga;
 	private RedBlackBST<Date,Comparendo> arbol = new RedBlackBST<Date,Comparendo>();
@@ -60,6 +62,8 @@ public class Modelo
 	int diasMax400N, numer400N, dias400N, diasMin400N; 
 	int diasMax40N, numer40N, dias40N, diasMin40N; 
 	int diasMax4N, numer4N, dias4N, diasMin4N; 
+	
+	int comparendosProcesar;
 
 	public Modelo()
 	{
@@ -106,6 +110,11 @@ public class Modelo
 	public double darCostoMaxHeap()
 	{
 		return costoMaxHeap;
+	}
+	public int darTam()
+	{
+		int valor = comparendosProcesar;
+		return valor;
 	}
 	//---------------------------------------------
 
@@ -226,16 +235,40 @@ public class Modelo
 		MaxHeapCP<Comparendo> elementos = clonar();
 		MaxHeapCP<Comparendo> respuesta = new MaxHeapCP<Comparendo>();
 
-		SimpleDateFormat parser = new SimpleDateFormat("YYYY/MM/DD-HH:MM:ss");
-		Date fechaInici = parser.parse("2018/11/10-00:00:00");
-		Date fechaFinal = parser.parse("2018/11/14-00:00:00");
-		System.out.println("Fecha inicial");
-		System.out.println(pFechaInicio);
-		System.out.println(fechaInici);
-		System.out.println("Fecha final");
-		System.out.println(pFechaFinal);
-		System.out.println(fechaFinal);
-
+		
+		String string = pFechaInicio;
+		String[] parts = string.split("-");
+		String part1 = parts[0];
+		String[] Fechita1 = part1.split("/");
+		
+		int mesInicial = Integer.parseInt(Fechita1[1]) -1;
+		int diaIncial = Integer.parseInt(Fechita1[2]);
+		
+		Date fechaInicio = new Date(118, mesInicial,diaIncial);
+		String part2 = parts[1];
+		String[] horita = part2.split(":");
+		
+		fechaInicio.setHours(Integer.parseInt(horita[0]));
+		fechaInicio.setMinutes(Integer.parseInt(horita[1]));
+		fechaInicio.setSeconds(Integer.parseInt(horita[2]));
+		
+		String string1 = pFechaFinal;
+		String[] partsC = string1.split("-");
+		String part1C = partsC[0];
+		String[] Fechita1C = part1C.split("/");
+		
+		int mesFinal = Integer.parseInt(Fechita1C[1]) -1;
+		int diaFinal = Integer.parseInt(Fechita1C[2]);
+		
+		Date fechaFinal = new Date(118, mesFinal,diaFinal);
+		String part2C = partsC[1];
+		String[] horitaC = part2C.split(":");
+		
+		fechaFinal.setHours(Integer.parseInt(horitaC[0]));
+		fechaFinal.setMinutes(Integer.parseInt(horitaC[1]));
+		fechaFinal.setSeconds(Integer.parseInt(horitaC[2]));
+		
+		
 		RedBlackBST<Date,Comparendo> arbol = new RedBlackBST<Date,Comparendo>();
 
 		int tam = elementos.darNumElementos();
@@ -245,9 +278,8 @@ public class Modelo
 			arbol.put(este.darFecha(), este);
 		}
 
-		Queue<Comparendo> datosPre = arbol.valuesInRange(fechaInici, fechaFinal);
+		Queue<Comparendo> datosPre = arbol.valuesInRange(fechaInicio, fechaFinal);
 		int tamFnal = datosPre.getSize();
-		System.out.println(tamFnal);
 		for(int j = 0; j<tamFnal;j++)
 		{
 			Comparendo fin = datosPre.dequeue();
@@ -292,7 +324,7 @@ public class Modelo
 		for(int i = 0; i <corredor;i++)
 		{
 			Comparendo actual = trabajable.sacarMax();
-			actual.cambiarComparacion(0);
+			actual.cambiarComparacion(3);
 
 			LLaves2B llaveq = new LLaves2B(actual.darMedioDeteccion(),actual.darClaseVeiculo(),actual.darTipoServicio(),actual.darLocalidad());
 
@@ -354,13 +386,15 @@ public class Modelo
 	public String requerimiento1C(int rangoInicial, int rangoFinal, int tamno)
 	{
 		MaxHeapCP<Comparendo> estructura = new MaxHeapCP<Comparendo>();
-
+		comparendosProcesar = arbol.size()/365;
 		Date fechaInicio = new Date(118, 0,rangoInicial);
 		Date fechaDia = new Date(118, 0,rangoFinal);
 		Date fechaFinal = new Date(118, 0,rangoFinal+1);
 
 		Queue<Comparendo> datosPre = arbol.valuesInRange(fechaInicio, fechaFinal);
 
+		
+		
 		String respueta ="";
 		//		2018/01/01-2018/01/07 | ************
 
@@ -407,9 +441,10 @@ public class Modelo
 		Date fechaFinal = new Date(118, 0,rangoFinal);
 
 		calcularCosto(estructuraAplicacion2C,fechaInicio);
+		comparendosProcesar = arbol.size()/365;
 
 		Queue<Comparendo> comDia = arbol.valuesInRange(fechaInicio, fechaFinal);
-
+		
 		int tam = comDia.getSize();
 
 		for(int i =0; i<tam; i++)
@@ -454,7 +489,7 @@ public class Modelo
 		}
 
 
-		for(int i = 0; i<100 && estructuraAplicacion2C.isEmpty()==false; i++)
+		for(int i = 0; i<comparendosProcesar && estructuraAplicacion2C.isEmpty()==false; i++)
 		{
 
 			Comparendo comaren= estructuraAplicacion2C.dequeue();
@@ -594,10 +629,10 @@ public class Modelo
 		int valor400 = dias400/numer400;
 		int valor40 = dias40/numer40;
 		int valor4 = dias4/numer4;
-
-		respuesta += "$400 "+ diasMin400 +" - "+ valor400+" - "+diasMax400+"\n";
-		respuesta +="$40 "+ diasMin40 +" - "+ valor40+" - "+diasMax40+"\n";
-		respuesta +="$4 "+ diasMin4 +" - "+ valor4+" - "+diasMax4;
+		               
+		respuesta +="        $400              "+ diasMin400 +"                 "+ valor400+"                 "+diasMax400+"\n"+"----------------------------------------------------------------------------"+"\n";
+		respuesta +="        $40               "+ diasMin40 +"                 "+ valor40+"                 "+diasMax40+"\n"+"----------------------------------------------------------------------------"+"\n";
+		respuesta +="        $4                "+ diasMin4 +"                 "+ valor4+"                 "+diasMax4;
 
 		return respuesta;
 	}
@@ -610,7 +645,7 @@ public class Modelo
 		calcularCostoNuevoSistema(estructura3C,fechaInicio);
 
 		Queue<Comparendo> comDia = arbol.valuesInRange(fechaInicio, fechaFinal);
-
+		comparendosProcesar = arbol.size()/365;
 
 		int tam = comDia.getSize();
 
@@ -639,6 +674,7 @@ public class Modelo
 
 		boolean termine = false;
 		int contador = 0;
+
 		while(termine == false)
 		{ 
 
@@ -657,7 +693,7 @@ public class Modelo
 				respueta1 = respueta1 +"*";
 		}
 
-		for(int i = 0; i<100 && estructura3C.esVacia()==false; i++)
+		for(int i = 0; i<comparendosProcesar && estructura3C.esVacia()==false; i++)
 		{
 			Comparendo comaren = estructura3C.sacarMax();
 			numeroDiasTotales3C += comaren.darNumerosDias();
@@ -721,7 +757,7 @@ public class Modelo
 			este.cambiarDia(fecha);
 			este.cambiarComparacion(4);
 			copia.agregar(este);
-
+			
 			if(este.darDescripcion().contains("INMOVILIZADO") == true)
 				costoMaxHeap+= 400;
 			else if(este.darDescripcion().contains("LICENCIA") == true)
@@ -729,7 +765,10 @@ public class Modelo
 			else
 				costoMaxHeap+= 4;	
 		}	
-		estructura3C = copia;		
+		estructura3C = copia;	
+		
+		
+		
 	}
 
 	public String promedioDeDias3C()
@@ -791,9 +830,9 @@ public class Modelo
 		int valor40 = dias40N/numer40N;
 		int valor4 = dias4N/numer4N;
 
-		respuesta += "$400 "+ diasMin400N +" - "+ valor400+" - "+diasMax400N+"\n";
-		respuesta +="$40 "+ diasMin40N +" - "+ valor40+" - "+diasMax40N+"\n";
-		respuesta +="$4 "+ diasMin4N +" - "+ valor4+" - "+diasMax4N;
+		respuesta +="        $400              "+ diasMin400N +"                 "+ valor400+"                 "+diasMax400N+"\n"+"----------------------------------------------------------------------------"+"\n";
+		respuesta +="        $40               "+ diasMin40N +"                 "+ valor40+"                 "+diasMax40N+"\n"+"----------------------------------------------------------------------------"+"\n";
+		respuesta +="        $4                "+ diasMin4N +"                 "+ valor4+"                 "+diasMax4N;
 
 		return respuesta;
 	}

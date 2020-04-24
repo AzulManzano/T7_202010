@@ -90,9 +90,21 @@ public class Controller
 
 				MaxHeapCP<Comparendo> elemeto2A = modelo.requerimiento2A(mes,dia);
 
-				for(int i =0; i<20;i++)
+				int tam2A = elemeto2A.darNumElementos();
+
+				if(tam2A>=20)
 				{
-					view.printMessage(elemeto2A.sacarMax().darInformacion1A());
+					for(int i =0; i<20;i++)
+					{
+						view.printMessage(elemeto2A.sacarMax().darInformacion1A());
+					}
+				}
+				else
+				{
+					for(int i =0; i<tam2A;i++)
+					{
+						view.printMessage(elemeto2A.sacarMax().darInformacion1A());
+					}
 				}
 				view.printMessage("");
 				view.printMessage("");
@@ -118,10 +130,20 @@ public class Controller
 				int tam = elemeto3A.darNumElementos();
 				if(tam != 0)
 				{
-
-					for(int i = 0; i<20;i++)
+					if(tam >=20)
 					{
-						view.printMessage(elemeto3A.sacarMax().darInformacion3A());
+
+						for(int i = 0; i<20;i++)
+						{
+							view.printMessage(elemeto3A.sacarMax().darInformacion3A());
+						}
+					}
+					else 
+					{
+						for(int i = 0; i<tam;i++)
+						{
+							view.printMessage(elemeto3A.sacarMax().darInformacion3A());
+						}
 					}
 				}
 				else
@@ -169,15 +191,25 @@ public class Controller
 
 				MaxHeapCP<Comparendo> elemeto2B = modelo.requerimiento2B(medio, tipoV, tipoS,loc);
 
+
 				if(elemeto2B != null)
 				{
+					int tamanito = elemeto2B.darNumElementos();
 					view.printMessage("La informacion de los comparendos, que cumplen esas espesificaciones, es la siguiente: ");
 
-
-
-					for(int i =0; i<20;i++)
+					if(tamanito>=20)
 					{
-						view.printMessage(elemeto2B.sacarMax().darInformacion2B());
+						for(int i =0; i<20;i++)
+						{
+							view.printMessage(elemeto2B.sacarMax().darInformacion2B());
+						}
+					}
+					else
+					{
+						for(int i =0; i<tamanito;i++)
+						{
+							view.printMessage(elemeto2B.sacarMax().darInformacion2B());
+						}
 					}
 				}
 				else
@@ -205,11 +237,22 @@ public class Controller
 				int tam3B = elemeto3B.darNumElementos();
 				if(tam3B != 0)
 				{
-
-					for(int i = 0; i<tam3B;i++)
+					if(tam3B<20)
 					{
-						view.printMessage(elemeto3B.sacarMax().darInformacion3B());
+
+						for(int i = 0; i<tam3B;i++)
+						{
+							view.printMessage(elemeto3B.sacarMax().darInformacion3B());
+						}
 					}
+					else 
+					{
+						for(int i = 0; i<20;i++)
+						{
+							view.printMessage(elemeto3B.sacarMax().darInformacion3B());
+						}
+					}
+
 				}
 				else
 					view.printMessage("No hay comparendos que cumplan estos requerimientos");
@@ -235,7 +278,7 @@ public class Controller
 						i=365;
 						termine = true;
 					}
-					view.printMessage(modelo.requerimiento1C(j, i, tamanoArreglo*5));
+					view.printMessage(modelo.requerimiento1C(j, i, tamanoArreglo*100));
 					i+= tamanoArreglo;
 					j+= tamanoArreglo;
 
@@ -243,7 +286,7 @@ public class Controller
 				}
 
 				view.printMessage("");
-				view.printMessage("Cada * representa "+ tamanoArreglo*5 +" Comparendos");
+				view.printMessage("Cada * representa "+ tamanoArreglo*100 +" Comparendos");
 				view.printMessage("");
 				view.printMessage("");
 				break;
@@ -256,10 +299,11 @@ public class Controller
 				view.printMessage("-------------------------------------------------");
 				for(int k = 1; k<366;k++)
 				{
-					view.printMessage(modelo.requerimiento2C(k, k+1, 50));
+					view.printMessage(modelo.requerimiento2C(k, k+1, 750));
 				}
 				view.printMessage("");
-				view.printMessage("Cada * y # representa 50 Comparendos");
+				view.printMessage("Cada * y # representa "+750 +" Comparendos");
+				view.printMessage("");
 				view.printMessage("");
 				view.printMessage("INFORMACION ADICIONAL");
 				view.printMessage("----------------------------------------------------------");
@@ -268,8 +312,18 @@ public class Controller
 				view.printMessage("----------------------------------------------------------");
 				view.printMessage("Número de días en promedio que |  "+modelo.promedioDeDias2C());
 				view.printMessage("  debe esperar un comparendo   |");
+				view.printMessage("----------------------------------------------------------");
 				view.printMessage("");
+				view.printMessage("");
+				view.printMessage("TABLA DE INFORMACION");
+				view.printMessage("----------------------------------------------------------------------------");
+				view.printMessage(" Costo diario del |  Tiempo mínimo   | Tiempo promedio  |  Tiempo máximo   |");
+				view.printMessage("    comparendo    | de espera (días) | de espera (días) |  deespera (días) |");
+				view.printMessage("----------------------------------------------------------------------------");
 				view.printMessage(modelo.tablaInformacion());
+				view.printMessage("----------------------------------------------------------------------------");
+				view.printMessage("");
+				view.printMessage("");
 				break;
 
 			case 10:
@@ -280,10 +334,11 @@ public class Controller
 				view.printMessage("-------------------------------------------------");
 				for(int k = 1; k<366;k++)
 				{
-					view.printMessage(modelo.requerimiento3C(k, k+1, 50));
+					view.printMessage(modelo.requerimiento3C(k, k+1, 750));
 				}
 				view.printMessage("");
-				view.printMessage("Cada * y # representa 50 Comparendos");
+				view.printMessage("Cada * y # representa "+750 +" Comparendos");
+				view.printMessage("");
 				view.printMessage("");
 				view.printMessage("INFORMACION ADICIONAL");
 				view.printMessage("----------------------------------------------------------");
@@ -292,8 +347,18 @@ public class Controller
 				view.printMessage("----------------------------------------------------------");
 				view.printMessage("Número de días en promedio que |  "+modelo.promedioDeDias3C());
 				view.printMessage("  debe esperar un comparendo   |");
+				view.printMessage("----------------------------------------------------------");
 				view.printMessage("");
+				view.printMessage("");
+				view.printMessage("TABLA DE INFORMACION");
+				view.printMessage("----------------------------------------------------------------------------");
+				view.printMessage(" Costo diario del |  Tiempo mínimo   | Tiempo promedio  |  Tiempo máximo   |");
+				view.printMessage("    comparendo    | de espera (días) | de espera (días) |  deespera (días) |");
+				view.printMessage("----------------------------------------------------------------------------");
 				view.printMessage(modelo.tablaNuevoSistema());
+				view.printMessage("----------------------------------------------------------------------------");
+				view.printMessage("");
+				view.printMessage("");
 				break;
 
 			case 11:			

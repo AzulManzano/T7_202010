@@ -187,4 +187,5 @@ public class MaxHeapCP<T extends Comparable<T>> implements IMaxHeapCP<T>
 	{
 		return new HeapIterator(elementos);
 	}
+	
 }

@@ -272,15 +272,15 @@ public class Comparendo implements Comparable<Comparendo>
 			}
 			else if(this.darDescripcion().contains("INMOVILIZADO") == true && arg.darDescripcion().contains("INMOVILIZADO") == true)
 			{
-				if(this.darObjec()>arg.darObjec())
+				if(this.darFecha().compareTo(arg.darFecha())<0)
 				{
 					valor = 1;
 				}
-				else if(this.darObjec()<arg.darObjec())
+				else if(this.darFecha().compareTo(arg.darFecha())>0)
 				{
 					valor = -1;
 				}
-				else if(this.darObjec()==arg.darObjec())
+				else if(this.darFecha().compareTo(arg.darFecha())==0)
 				{
 					valor = 0;
 				}
@@ -292,15 +292,15 @@ public class Comparendo implements Comparable<Comparendo>
 			}
 			else if(this.darDescripcion().contains("LICENCIA") == true && arg.darDescripcion().contains("LICENCIA") == true)
 			{
-				if(this.darObjec()>arg.darObjec())
+				if(this.darFecha().compareTo(arg.darFecha())<0)
 				{
 					valor = 1;
 				}
-				else if(this.darObjec()<arg.darObjec())
+				else if(this.darFecha().compareTo(arg.darFecha())>0)
 				{
 					valor = -1;
 				}
-				else if(this.darObjec()==arg.darObjec())
+				else if(this.darFecha().compareTo(arg.darFecha())==0)
 				{
 					valor = 0;
 				}
@@ -316,15 +316,15 @@ public class Comparendo implements Comparable<Comparendo>
 			}
 			else if(this.darDescripcion().contains("LICENCIA") == false && this.darDescripcion().contains("INMOVILIZADO") == false && arg.darDescripcion().contains("INMOVILIZADO") == false && arg.darDescripcion().contains("LICENCIA") == false)
 			{
-				if(this.darObjec()>arg.darObjec())
+				if(this.darFecha().compareTo(arg.darFecha())<0)
 				{
 					valor = 1;
 				}
-				else if(this.darObjec()<arg.darObjec())
+				else if(this.darFecha().compareTo(arg.darFecha())>0)
 				{
 					valor = -1;
 				}
-				else if(this.darObjec()==arg.darObjec())
+				else if(this.darFecha().compareTo(arg.darFecha())==0)
 				{
 					valor = 0;
 				}
