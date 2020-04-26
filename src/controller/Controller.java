@@ -58,8 +58,7 @@ public class Controller
 				view.printMessage("-El comparendo con el mayor OBJECTID encontrado fue:");
 				view.printMessage("  "+ modelo.darListaDeCarga().darMax().darInformacionDeCarga());
 
-
-				view.printMessage("");
+				
 				view.printMessage("");
 				break;
 
@@ -329,6 +328,7 @@ public class Controller
 			case 10:
 				view.printMessage("EL COSTO DE LOS TIEMPOS DE ESPERA USANDO EL NUEVO SISTEMA");
 				view.printMessage("");
+				
 				view.printMessage("Fecha       | Comparendos procesados          ***");
 				view.printMessage("            | Comparendos que están en espera ###");
 				view.printMessage("-------------------------------------------------");

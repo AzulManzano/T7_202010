@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class RedBlackBST<K extends Comparable<K>,V extends Comparable<V>> implements IRedBlackBST<K,V> 
+public class RedBlackBST2<K extends Comparable<K>,V> implements IRedBlackBST<K,V> 
 {
 	private static final boolean RED   = true;
 	private static final boolean BLACK = false;
 
 	private NodoRedBlackBST<K,V> raiz;
 
-	public RedBlackBST()
+	public RedBlackBST2()
 	{
 		raiz = null;
 	}
@@ -565,4 +565,5 @@ public class RedBlackBST<K extends Comparable<K>,V extends Comparable<V>> implem
 		return keys().iterator();
 	}
 }
+
 

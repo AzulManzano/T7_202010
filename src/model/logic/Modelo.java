@@ -15,6 +15,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
 import model.data_structures.RedBlackBST;
+import model.data_structures.RedBlackBST2;
 import model.data_structures.Comparendo;
 import model.data_structures.LLaves2A;
 import model.data_structures.LLaves2B;
@@ -31,7 +32,7 @@ import model.data_structures.SequentialSearch;
  */
 public class Modelo 
 {
-    //	Comparendos_DEI_2018_Bogotá_D.C_small_50000_sorted
+	//	Comparendos_DEI_2018_Bogotá_D.C_small_50000_sorted
 	//		
 	// PORFAVOR LEER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	//Ya que mi computador no tiene la capacidad de leer los 500000 datos del archivo grande no pude hacer las tablas de datos con esa informacion, 
@@ -42,6 +43,7 @@ public class Modelo
 	private MaxHeapCP<Comparendo> listaCarga;
 	private RedBlackBST<Date,Comparendo> arbol = new RedBlackBST<Date,Comparendo>();
 	private Queue<Comparendo> estructuraAplicacion2C;
+	private RedBlackBST2<Integer,MaxHeapCP<Comparendo>> nuevoArbol = new RedBlackBST2<Integer,MaxHeapCP<Comparendo>>();
 	private MaxHeapCP<Comparendo> estructura3C;
 
 	double costoCola;
@@ -58,11 +60,11 @@ public class Modelo
 
 	int numeroDiasTotales3C;
 	int numeroComparendos3C;
-	
+
 	int diasMax400N, numer400N, dias400N, diasMin400N; 
 	int diasMax40N, numer40N, dias40N, diasMin40N; 
 	int diasMax4N, numer4N, dias4N, diasMin4N; 
-	
+
 	int comparendosProcesar;
 
 	public Modelo()
@@ -80,7 +82,7 @@ public class Modelo
 		diasMin40 = 1000; 
 		diasMax4 = 0;  
 		diasMin4 = 1000;
-		
+
 		diasMax400N = 0; 
 		diasMin400N = 1000; 
 		diasMax40N = 0; 
@@ -161,9 +163,25 @@ public class Modelo
 
 
 				Comparendo c = new Comparendo(OBJECTID, FECHA_HORA, DES_INFRAC, MEDIO_DETE, CLASE_VEHI, TIPO_SERVI, INFRACCION, LOCALIDAD, longitud, latitud);
+				Comparendo d = new Comparendo(OBJECTID, FECHA_HORA, DES_INFRAC, MEDIO_DETE, CLASE_VEHI, TIPO_SERVI, INFRACCION, LOCALIDAD, longitud, latitud);
+				d.cambiarComparacion(0);
+				
+				listaCarga.agregar(d);
+				arbol.put(FECHA_HORA, d);
 
-				listaCarga.agregar(c);
-				arbol.put(FECHA_HORA, c);
+				c.cambiarComparacion(4);
+
+				int llaves = numeroDiaAno(c.darFecha());
+
+				if(nuevoArbol.get(llaves)== null)
+				{
+					MaxHeapCP<Comparendo> nuevocosito = new MaxHeapCP<Comparendo>();
+					nuevocosito.agregar(c);
+					nuevoArbol.put(llaves, nuevocosito);
+				}
+				else
+					nuevoArbol.get(llaves).agregar(c);
+
 			}
 
 		} catch (FileNotFoundException | ParseException e) {
@@ -171,6 +189,11 @@ public class Modelo
 			e.printStackTrace();
 		}
 
+	}
+
+	public RedBlackBST2<Integer,MaxHeapCP<Comparendo>> darArbolNuevo()
+	{
+		return nuevoArbol;
 	}
 
 	public MaxHeapCP<Comparendo> requerimiento1A()
@@ -235,40 +258,40 @@ public class Modelo
 		MaxHeapCP<Comparendo> elementos = clonar();
 		MaxHeapCP<Comparendo> respuesta = new MaxHeapCP<Comparendo>();
 
-		
+
 		String string = pFechaInicio;
 		String[] parts = string.split("-");
 		String part1 = parts[0];
 		String[] Fechita1 = part1.split("/");
-		
+
 		int mesInicial = Integer.parseInt(Fechita1[1]) -1;
 		int diaIncial = Integer.parseInt(Fechita1[2]);
-		
+
 		Date fechaInicio = new Date(118, mesInicial,diaIncial);
 		String part2 = parts[1];
 		String[] horita = part2.split(":");
-		
+
 		fechaInicio.setHours(Integer.parseInt(horita[0]));
 		fechaInicio.setMinutes(Integer.parseInt(horita[1]));
 		fechaInicio.setSeconds(Integer.parseInt(horita[2]));
-		
+
 		String string1 = pFechaFinal;
 		String[] partsC = string1.split("-");
 		String part1C = partsC[0];
 		String[] Fechita1C = part1C.split("/");
-		
+
 		int mesFinal = Integer.parseInt(Fechita1C[1]) -1;
 		int diaFinal = Integer.parseInt(Fechita1C[2]);
-		
+
 		Date fechaFinal = new Date(118, mesFinal,diaFinal);
 		String part2C = partsC[1];
 		String[] horitaC = part2C.split(":");
-		
+
 		fechaFinal.setHours(Integer.parseInt(horitaC[0]));
 		fechaFinal.setMinutes(Integer.parseInt(horitaC[1]));
 		fechaFinal.setSeconds(Integer.parseInt(horitaC[2]));
-		
-		
+
+
 		RedBlackBST<Date,Comparendo> arbol = new RedBlackBST<Date,Comparendo>();
 
 		int tam = elementos.darNumElementos();
@@ -393,8 +416,8 @@ public class Modelo
 
 		Queue<Comparendo> datosPre = arbol.valuesInRange(fechaInicio, fechaFinal);
 
-		
-		
+
+
 		String respueta ="";
 		//		2018/01/01-2018/01/07 | ************
 
@@ -440,11 +463,11 @@ public class Modelo
 		Date fechaInicio = new Date(118, 0,rangoInicial);
 		Date fechaFinal = new Date(118, 0,rangoFinal);
 
-		calcularCosto(estructuraAplicacion2C,fechaInicio);
+
 		comparendosProcesar = arbol.size()/365;
 
 		Queue<Comparendo> comDia = arbol.valuesInRange(fechaInicio, fechaFinal);
-		
+
 		int tam = comDia.getSize();
 
 		for(int i =0; i<tam; i++)
@@ -493,8 +516,10 @@ public class Modelo
 		{
 
 			Comparendo comaren= estructuraAplicacion2C.dequeue();
+			calcularCosto(comaren,fechaInicio);
 			numeroDiasTotales2C += comaren.darNumerosDias();
 			numeroComparendos2C++;
+
 
 			if(comaren.darDescripcion().contains("INMOVILIZADO") == true)
 			{
@@ -543,28 +568,41 @@ public class Modelo
 		return respueta1+"\n"+respueta2;
 	}
 
-	private void calcularCosto(Queue<Comparendo> cola, Date fecha)
-	{
-		Queue<Comparendo> copia = new Queue<Comparendo>();
+	//	private void calcularCosto(Queue<Comparendo> cola, Date fecha)
+	//	{
+	//		Queue<Comparendo> copia = new Queue<Comparendo>();
+	//
+	//		int tam = cola.getSize();
+	//
+	//		for(int i = 0; i < tam; i++)
+	//		{
+	//			Comparendo este = cola.dequeue();
+	//			este.cambiarDia(fecha);
+	//			copia.enqueue(este);
+	//
+	//			if(este.darDescripcion().contains("INMOVILIZADO") == true)
+	//				costoCola+= 400;
+	//			else if(este.darDescripcion().contains("LICENCIA") == true)
+	//				costoCola+= 40;
+	//			else
+	//				costoCola+= 4;	
+	//		}	
+	//		estructuraAplicacion2C = copia;		
+	//	}
 
-		int tam = cola.getSize();
 
-		for(int i = 0; i < tam; i++)
-		{
-			Comparendo este = cola.dequeue();
-			este.cambiarDia(fecha);
-			copia.enqueue(este);
+	private void calcularCosto(Comparendo comparendo, Date fecha)
+	{		
+		comparendo.cambiarDia(fecha);
 
-			if(este.darDescripcion().contains("INMOVILIZADO") == true)
-				costoCola+= 400;
-			else if(este.darDescripcion().contains("LICENCIA") == true)
-				costoCola+= 40;
-			else
-				costoCola+= 4;	
-		}	
-		estructuraAplicacion2C = copia;		
+
+		if(comparendo.darDescripcion().contains("INMOVILIZADO") == true)
+			costoCola+= 400*comparendo.darNumerosDias();
+		else if(comparendo.darDescripcion().contains("LICENCIA") == true)
+			costoCola+= 40*comparendo.darNumerosDias();
+		else
+			costoCola+= 4*comparendo.darNumerosDias();		
 	}
-
 
 	public String promedioDeDias2C()
 	{
@@ -629,7 +667,7 @@ public class Modelo
 		int valor400 = dias400/numer400;
 		int valor40 = dias40/numer40;
 		int valor4 = dias4/numer4;
-		               
+
 		respuesta +="        $400              "+ diasMin400 +"                 "+ valor400+"                 "+diasMax400+"\n"+"----------------------------------------------------------------------------"+"\n";
 		respuesta +="        $40               "+ diasMin40 +"                 "+ valor40+"                 "+diasMax40+"\n"+"----------------------------------------------------------------------------"+"\n";
 		respuesta +="        $4                "+ diasMin4 +"                 "+ valor4+"                 "+diasMax4;
@@ -639,23 +677,18 @@ public class Modelo
 
 	public String requerimiento3C(int rangoInicial, int rangoFinal, int tamno)
 	{
+		comparendosProcesar = arbol.size()/365;
+		Integer diaInicail = rangoInicial;
+		Integer diaFianl = rangoFinal;
 		Date fechaInicio = new Date(118, 0,rangoInicial);
 		Date fechaFinal = new Date(118, 0,rangoFinal);
 
-		calcularCostoNuevoSistema(estructura3C,fechaInicio);
+
 
 		Queue<Comparendo> comDia = arbol.valuesInRange(fechaInicio, fechaFinal);
-		comparendosProcesar = arbol.size()/365;
+		
 
-		int tam = comDia.getSize();
-
-		for(int i =0; i<tam; i++)
-		{
-			Comparendo este = comDia.dequeue();
-			este.cambiarComparacion(4);
-			estructura3C.agregar(este);
-		}
-
+		
 		String respueta1 ="";
 		String respueta2 ="";
 
@@ -670,7 +703,7 @@ public class Modelo
 		respueta1 = "2018/"+mesInicail+"/"+diaInicial+"  |  ";
 		respueta2 = "            |  ";
 
-		int tamnoCola = estructura3C.darNumElementos();
+		int tamnoCola = calcularElemensotos(rangoInicial);
 
 		boolean termine = false;
 		int contador = 0;
@@ -693,137 +726,218 @@ public class Modelo
 				respueta1 = respueta1 +"*";
 		}
 
-		for(int i = 0; i<comparendosProcesar && estructura3C.esVacia()==false; i++)
-		{
-			Comparendo comaren = estructura3C.sacarMax();
-			numeroDiasTotales3C += comaren.darNumerosDias();
-			numeroComparendos3C++;
-			
-			if(comaren.darDescripcion().contains("INMOVILIZADO") == true)
-			{
-				dias400N += comaren.darNumerosDias();
-				numer400N++;
-				if(diasMax400N < comaren.darNumerosDias())
-					diasMax400N = comaren.darNumerosDias();
-				if(diasMin400N > comaren.darNumerosDias())
-					diasMin400N= comaren.darNumerosDias();
-			}
-			else if(comaren.darDescripcion().contains("LICENCIA") == true)
-			{
-				dias40N += comaren.darNumerosDias();
-				numer40N++;
-				if(diasMax40N < comaren.darNumerosDias())
-					diasMax40N = comaren.darNumerosDias();
-				if(diasMin40N > comaren.darNumerosDias())
-					diasMin40N= comaren.darNumerosDias();
-			}
-			else
-			{
-				dias4N += comaren.darNumerosDias();
-				numer4N++;
-				if(diasMax4N < comaren.darNumerosDias())
-					diasMax4N = comaren.darNumerosDias();
-				if(diasMin4N > comaren.darNumerosDias())
-					diasMin4N= comaren.darNumerosDias();
-			}
-		}
+		int elementosEliminados = eliminarNuevoSistema400(1, rangoInicial);
 
-		int tamanoTotal = estructura3C.darNumElementos();
-		termine = false;
+		if(elementosEliminados <comparendosProcesar)
+			elementosEliminados += eliminarNuevoSistema40(1, rangoInicial,comparendosProcesar- elementosEliminados);
+		if(elementosEliminados <comparendosProcesar)
+			elementosEliminados += eliminarNuevoSistema4(1, rangoInicial,comparendosProcesar- elementosEliminados);
 
-		while(termine == false)
-		{
-			if(tamanoTotal - tamno>=0)
-			{
-				tamanoTotal = tamanoTotal - tamno;
-				respueta2 = respueta2 +"#";
-			}
-			else
-				termine = true;
-		}
+		//		for(int i = 0; i<comparendosProcesar && estructura3C.esVacia()==false; i++)
+		//		{
+		//			Comparendo comaren = estructura3C.sacarMax();
+		//			numeroDiasTotales3C += comaren.darNumerosDias();
+		//			numeroComparendos3C++;
+		//
+		//			if(comaren.darDescripcion().contains("INMOVILIZADO") == true)
+		//			{
+		//				dias400N += comaren.darNumerosDias();
+		//				numer400N++;
+		//				if(diasMax400N < comaren.darNumerosDias())
+		//					diasMax400N = comaren.darNumerosDias();
+		//				if(diasMin400N > comaren.darNumerosDias())
+		//					diasMin400N= comaren.darNumerosDias();
+		//			}
+		//			else if(comaren.darDescripcion().contains("LICENCIA") == true)
+		//			{
+		//				dias40N += comaren.darNumerosDias();
+		//				numer40N++;
+		//				if(diasMax40N < comaren.darNumerosDias())
+		//					diasMax40N = comaren.darNumerosDias();
+		//				if(diasMin40N > comaren.darNumerosDias())
+		//					diasMin40N= comaren.darNumerosDias();
+		//			}
+		//			else
+		//			{
+		//				dias4N += comaren.darNumerosDias();
+		//				numer4N++;
+		//				if(diasMax4N < comaren.darNumerosDias())
+		//					diasMax4N = comaren.darNumerosDias();
+		//				if(diasMin4N > comaren.darNumerosDias())
+		//					diasMin4N= comaren.darNumerosDias();
+		//			}
+		//		}
+		//
+				int tamanoTotal = calcularElemensotos(rangoInicial);
+				termine = false;
+		
+				while(termine == false)
+				{
+					if(tamanoTotal - tamno>=0)
+					{
+						tamanoTotal = tamanoTotal - tamno;
+						respueta2 = respueta2 +"#";
+					}
+					else
+						termine = true;
+				}
 
 		return respueta1+"\n"+respueta2;
 	}
 
-	private void calcularCostoNuevoSistema(MaxHeapCP<Comparendo> cola, Date fecha)
+	public int eliminarNuevoSistema400(Integer diaInicial, Integer diaFinal)
 	{
-		MaxHeapCP<Comparendo> copia = new MaxHeapCP<Comparendo>();
-
-		int tam = cola.darNumElementos();
-
-		for(int i = 0; i < tam; i++)
+		Date fechaFinal = new Date(118, 0,diaFinal);
+		comparendosProcesar = arbol.size()/365;
+		int contador = 0;
+		for(Integer i = 1; i<diaFinal+1 && contador!=comparendosProcesar; i++)
 		{
-			Comparendo este = cola.sacarMax();
-			este.cambiarDia(fecha);
-			este.cambiarComparacion(4);
-			copia.agregar(este);
-			
-			if(este.darDescripcion().contains("INMOVILIZADO") == true)
-				costoMaxHeap+= 400;
-			else if(este.darDescripcion().contains("LICENCIA") == true)
-				costoMaxHeap+= 40;
-			else
-				costoMaxHeap+= 4;	
-		}	
-		estructura3C = copia;	
-		
-		
-		
+
+			if(nuevoArbol.get(i) !=null)
+			{
+				int elementos = nuevoArbol.get(i).darNumElementos();
+				if(elementos!=0)
+					for(int j = 0; j < elementos &&  contador!=comparendosProcesar; j++)
+					{
+
+						if(nuevoArbol.get(i).darMax().darDescripcion().contains("INMOVILIZADO")== true)
+						{
+							Comparendo este = nuevoArbol.get(i).sacarMax();
+							contador ++;
+							este.cambiarDia(fechaFinal);
+							costoMaxHeap+= 400*este.darNumerosDias();
+							numeroDiasTotales3C += este.darNumerosDias();
+							numeroComparendos3C++;
+
+							dias400N += este.darNumerosDias();
+							numer400N++;
+							if(diasMax400N < este.darNumerosDias())
+								diasMax400N = este.darNumerosDias();
+							if(diasMin400N > este.darNumerosDias())
+								diasMin400N= este.darNumerosDias();
+						}
+					}
+			}
+		}
+		return contador;
+	}
+
+
+	public int eliminarNuevoSistema40(Integer diaInicial, Integer diaFinal, int cuantos)
+	{
+		Date fechaFinal = new Date(118, 0,diaFinal);
+
+		int contador = 0;
+		for(Integer i = 1; i<diaFinal+1 && contador!=cuantos; i++)
+		{
+
+			if(nuevoArbol.get(i) !=null)
+			{
+				int elementos = nuevoArbol.get(i).darNumElementos();
+				if(elementos!=0)
+				{
+					for(int j = 0; j<elementos && nuevoArbol.get(i).darMax().darDescripcion().contains("LICENCIA") == true && contador!=cuantos; j++)
+					{
+						Comparendo este = nuevoArbol.get(i).sacarMax();
+						contador ++;
+						este.cambiarDia(fechaFinal);
+						costoMaxHeap+= 40*este.darNumerosDias();
+						numeroDiasTotales3C += este.darNumerosDias();
+						numeroComparendos3C++;
+
+						dias40N += este.darNumerosDias();
+						numer40N++;
+						if(diasMax40N < este.darNumerosDias())
+							diasMax40N = este.darNumerosDias();
+						if(diasMin40N > este.darNumerosDias())
+							diasMin40N= este.darNumerosDias();
+					}
+				}
+			}
+		}
+		return contador;
+	}
+	public int eliminarNuevoSistema4(Integer diaInicial, Integer diaFinal, int cuantos)
+	{
+		Date fechaFinal = new Date(118, 0,diaFinal);
+
+		int contador = 0;
+		for(Integer i = 1; i<diaFinal+1 && contador!=cuantos; i++)
+		{
+			if(nuevoArbol.get(i) !=null)
+			{
+				int elementos = nuevoArbol.get(i).darNumElementos();
+				if(elementos!=0)
+				{
+					for(int j = 0; j<elementos && contador!=cuantos; j++)
+					{
+						Comparendo este = nuevoArbol.get(i).sacarMax();
+						contador ++;
+						este.cambiarDia(fechaFinal);
+						costoMaxHeap+= 4*este.darNumerosDias();
+						numeroDiasTotales3C += este.darNumerosDias();
+						numeroComparendos3C++;
+
+						dias4N += este.darNumerosDias();
+						numer4N++;
+						if(diasMax4N < este.darNumerosDias())
+							diasMax4N = este.darNumerosDias();
+						if(diasMin4N > este.darNumerosDias())
+							diasMin4N= este.darNumerosDias();
+					}
+				}
+			}
+		}
+		return contador;
+	}
+
+	public int calcularElemensotos(Integer diaFinal)
+	{	
+		int contador = 0;
+		for(Integer i = 1; i<diaFinal+1 ; i++)
+		{
+			if(nuevoArbol.get(i) !=null)
+			{
+				int elementos = nuevoArbol.get(i).darNumElementos();
+				if(elementos!=0)
+				{
+					for(int j = 0; j<elementos ; j++)
+					{
+
+						contador ++;
+					}
+				}
+			}
+		}
+		return contador;
 	}
 
 	public String promedioDeDias3C()
 	{
-		MaxHeapCP<Comparendo> copia = new MaxHeapCP<Comparendo>();
+		Integer i = 39;
 
-		for(int i = 0; estructura3C.esVacia()==false; i++)
+		while(nuevoArbol.get(i).esVacia() == false)
 		{
-			Comparendo compa = estructura3C.sacarMax();
-			numeroDiasTotales3C += compa.darNumerosDias();
-			numeroComparendos3C++;
-			copia.agregar(compa);
+			eliminarNuevoSistema400(1, 365);
+			eliminarNuevoSistema40(1, 365,1500);
+			eliminarNuevoSistema4(1, 365,1500);
 		}
-		estructura3C = copia;
+
 		int valor = numeroDiasTotales3C/numeroComparendos3C;
 		return valor+"";
 	}
 
 	public String tablaNuevoSistema()
 	{
-		MaxHeapCP<Comparendo> copia = new MaxHeapCP<Comparendo>();
+		Integer i = 39;
 
-		for(int i = 0; estructura3C.esVacia()==false; i++)
+		while(nuevoArbol.get(i).esVacia() == false)
 		{
-			Comparendo comaren = estructura3C.sacarMax();
-			if(comaren.darDescripcion().contains("INMOVILIZADO") == true)
-			{
-				dias400N += comaren.darNumerosDias();
-				numer400N++;
-				if(diasMax400N < comaren.darNumerosDias())
-					diasMax400N = comaren.darNumerosDias();
-				if(diasMin400N > comaren.darNumerosDias())
-					diasMin400N= comaren.darNumerosDias();
-			}
-			else if(comaren.darDescripcion().contains("LICENCIA") == true)
-			{
-				dias40N += comaren.darNumerosDias();
-				numer40N++;
-				if(diasMax40N < comaren.darNumerosDias())
-					diasMax40N = comaren.darNumerosDias();
-				if(diasMin40N > comaren.darNumerosDias())
-					diasMin40N= comaren.darNumerosDias();
-			}
-			else
-			{
-				dias4N += comaren.darNumerosDias();
-				numer4N++;
-				if(diasMax4N < comaren.darNumerosDias())
-					diasMax4N = comaren.darNumerosDias();
-				if(diasMin4N > comaren.darNumerosDias())
-					diasMin4N= comaren.darNumerosDias();
-			}
-			copia.agregar(comaren);
+			eliminarNuevoSistema400(1, 365);
+			eliminarNuevoSistema40(1, 365,1500);
+			eliminarNuevoSistema4(1, 365,1500);
 		}
-		estructura3C = copia;
+
 
 		String respuesta = "";
 		int valor400 = dias400N/numer400N;
@@ -1068,6 +1182,37 @@ public class Modelo
 		}
 
 		return listica;
+	}
+	private int numeroDiaAno(Date fecha)
+	{
+		int respuesta = 0;
+
+		if(fecha.getMonth() == 0)
+			respuesta = fecha.getDate();
+		else if(fecha.getMonth() == 1)
+			respuesta = fecha.getDate() +31;
+		else if(fecha.getMonth() == 2)
+			respuesta = fecha.getDate() +59;
+		else if(fecha.getMonth() == 3)
+			respuesta = fecha.getDate() +90;
+		else if(fecha.getMonth() == 4)
+			respuesta = fecha.getDate() +120;
+		else if(fecha.getMonth() == 5)
+			respuesta = fecha.getDate() +151;
+		else if(fecha.getMonth() == 6)
+			respuesta = fecha.getDate() +181;
+		else if(fecha.getMonth() == 7)
+			respuesta = fecha.getDate() +212;
+		else if(fecha.getMonth() == 8)
+			respuesta = fecha.getDate() +243;
+		else if(fecha.getMonth() == 9)
+			respuesta = fecha.getDate() +273;
+		else if(fecha.getMonth() == 10)
+			respuesta = fecha.getDate() +304;
+		else if(fecha.getMonth() == 11)
+			respuesta = fecha.getDate() +334;
+
+		return respuesta;
 	}
 }
 
