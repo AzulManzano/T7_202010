@@ -241,6 +241,14 @@ public class LinearProbing<K extends Comparable<K>, V> implements ILinearProbing
         }
         return true;
     }
+	
+	public Queue<K> llaves() 
+	{
+		 Queue<K> queue = new  Queue<K>();
+		for (int i = 0; i < m; i++)
+			if (llaves[i] != null) queue.enqueue(llaves[i]);
+		return queue;
+	}
 
 	public Iterator<K> iterator() 
 	{
